@@ -2,8 +2,8 @@
 
 Once upon a time, an undergrad physics major made a goofy game about Becoming Physics. This is that game. Do you have what it takes to... 
 
-\n BECOME
+BECOME
 
-\n PHYSICS????
+PHYSICS????
 
 To run, run python main.py. 
