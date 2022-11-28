@@ -177,7 +177,7 @@ class Game(tk.Frame):
                 #print("debugginging")
                 classlist[index].name = "Controversial Physics"
                 self.foo = tk.Frame(self)
-                self.foo.lab = tk.Message(self.foo, text="Fake Physics has been renamed Controversial Physics in order to be more culturally sensitive." )
+                self.foo.lab = tk.Message(self.foo, text="Fake Physics has been renamed Controversial Physics in order to be more culturally sensitive. (Please select your classes again)" )
                 self.foo.but = tk.Button(self.foo, text="Ok then", command = self.ughfunction)
                 self.foo.lab.grid(row=0, column=0)
                 self.foo.but.grid(row=1, column=0)
