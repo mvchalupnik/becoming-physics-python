@@ -8,6 +8,7 @@ class LabType(Enum):
     BIG_STUFF = 2
     SMALL_STUFF = 1
     BOTH = 0
+    NONE = -1
 
 
 ##(happiness, knowledge, research)
@@ -93,15 +94,16 @@ LabScenario("The distance between the sun and the Earth is 93,000,000 miles. The
 
 
 class Lab:
-    """
+    """ Lab for player to join. Once the player joins a lab, the player may spend time in lab in order
+    to affect happiness, research, and knowledge stats.
+
+    :param name: The name of the Lab as a string, to be displayed
+    :param lab_type: The Enum type of the lab
+
     """
 
-    
-#    errorScenario = LabScenario("Error", Choice("Error", 0,0,0,"Error"), Choice("Error",0,0,0,"Error"), BOTH)
-    
-    ##one or two more Small stuff scenarios #TODO
-    ##another big stuff scenario -- you become an astronaut? and either go insane or are successful. 
 
+    # TODO I don't like that this is located here??
     ###set up siblings
     LAB_SCENARIOS[0].sibling = 1
     LAB_SCENARIOS[1].sibling = 0
@@ -114,38 +116,34 @@ class Lab:
     LAB_SCENARIOS[9].sibling = 10
     LAB_SCENARIOS[10].sibling = 9
     
-    ##class methods
-    def __init__ (self, name):
+    def __init__ (self, name, lab_type):
         self.name = name
-        #big
-        #small
+        self.lab_type = lab_type #TODO
     
-    def generate_lab_scenario(self, research_name):
+    def generate_lab_scenario(self):
         """
         """
-        #convert research_name to tag (prolly a prettier way to do this... :()
-        tag = 0
-        if research_name == "Big Stuff" :
-            tag = LabType.BIG_STUFF
-        if research_name == "Small Stuff" :
-            tag = LabType.SMALL_STUFF        
 
-        ##random generating of scenario
-        ##Check if the scenario has already been displayed. If so, then don't show it.
+        # Randomly generate a LabScenario associated with the LabType
         trys = 100
-        for x in range (0, trys):
-            rindex = int(random.random()*len(LAB_SCENARIOS)) ##gives me my random index
+        for x in range (0, trys): # TODO improve this??
+            # Gives me my random index
+            rindex = int(random.random()*len(LAB_SCENARIOS))
 
-            #if you haven't seen it and it has the correct tag, keep the rindex
-            if LAB_SCENARIOS[rindex].has_been_displayed == 0 and \
-            (LAB_SCENARIOS[rindex].tag == LabType.BOTH or LAB_SCENARIOS[rindex].tag == tag):
-                # change has been displayed field to 1
-                LAB_SCENARIOS[rindex].has_been_displayed = 1 #CAN USE A BOOLEAN HERE
+            # Check to make sure that LabScenario hasn't already been displayed
+            if (not LAB_SCENARIOS[rindex].has_been_displayed) and \
+                (LAB_SCENARIOS[rindex].lab_category == LabType.BOTH or\
+                LAB_SCENARIOS[rindex].lab_category == self.lab_type):
+
+                # Change has_been_displayed field to True
+                LAB_SCENARIOS[rindex].has_been_displayed = True
                 
-                ##check for a sibling, and if a sibling, set sibling seen to 1 TODO
+                # Check for a sibling, and if a sibling exists, change has_been_displayed to True
+                # for the sibling also
                 sindex = LAB_SCENARIOS[rindex].sibling
-                if sindex >=0 :
-                    LAB_SCENARIOS[sindex].has_been_displayed = 1
+                if sindex >=0:
+                    LAB_SCENARIOS[sindex].has_been_displayed = True
                 return LAB_SCENARIOS[rindex]
         else:
-            return self.errorScenario #is now gone TODO
+            # Ran out of LAB_SCENARIOs
+            return None

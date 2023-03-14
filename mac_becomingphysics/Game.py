@@ -9,9 +9,9 @@ from Lab import *
 from PhysicsClass import *
 from LabScenario import *
 from Ending import *
+import pdb
 
-
-# Set to False for "endless mode" (no endgame triggered) or debugging
+# Set to False for "endless mode" (no endgame triggered) or debugging; True for normal play
 debug_endgame_off = True
 
 class Game(tk.Frame):
@@ -26,7 +26,7 @@ class Game(tk.Frame):
     day = 0
 
     enrolled_physics_classes = []
-    joined_research_lab = Lab("none")
+    joined_research_lab = Lab("none", LabType.NONE)
 
     def __init__ (self, master=None):
         tk.Frame.__init__(self, master)
@@ -39,7 +39,6 @@ class Game(tk.Frame):
         self.portrait.knolab = tk.Label(self.portrait, text = "Knowledge: " + str(self.knowledge))
         self.portrait.reslab = tk.Label(self.portrait, text = "Research: " + str(self.research))
         self.portrait.daylab = tk.Label(self.portrait, text = "Day: " + str(self.day))
-        
         self.portrait.classlab = tk.Label(self.portrait, text = "Classes: ")
          
         self.hapstrvar = tk.StringVar()
@@ -317,7 +316,7 @@ class Game(tk.Frame):
           
             self.frr.cp1 = Image.open(self.enrolled_physics_classes[i].lectures[self.enrolled_physics_classes[i].day][1])
             
-            self.show_stat_changes(self.enrolled_physics_classes[i].happiness, self.enrolled_physics_classes[i].knowledge, 0) ##RECENT
+            self.show_stat_changes(self.enrolled_physics_classes[i].happiness, self.enrolled_physics_classes[i].knowledge, 0)
             
             ##Resize image but keep old aspect ratio
             newwidth = int((self.frr.cp1.width * 500)/self.frr.cp1.height)  
@@ -401,12 +400,12 @@ class Game(tk.Frame):
         self.frr.grid(row=0, column=1)
     
     def go_to_lab(self):
-        """ go to lab
+        """ Go to lab and generate a LabScenario
         """
         self.mainframe.grid_remove()
         
-        ls = self.joined_research_lab.generate_lab_scenario(self.joined_research_lab.name)
-        if ls.scenario == "error" : ##Ran out of scenarios!
+        ls = self.joined_research_lab.generate_lab_scenario()
+        if ls.scenario is None: ##Ran out of scenarios!
             self.fr = tk.Frame(self)
             self.fr.grid(column=1)
             tk.Message(self.fr,
@@ -470,7 +469,7 @@ class Game(tk.Frame):
                                                variable = oldvar,
                                                value = j)
                 
-                if self.enrolled_physics_classes[cnum].final.questions[i].answer == j:
+                if self.enrolled_physics_classes[cnum].final.questions[i].answer.value == j:
                     ##green
                     self.endf2.R1.config(bg = "green")
                 else:
@@ -485,8 +484,8 @@ class Game(tk.Frame):
         
         ##Make and store grade
         score = 0
-        for i in range(0,3) :
-            if self.enrolled_physics_classes[cnum].final.questions[i].answer == vars[i].get() :
+        for i in range(0,3):
+            if self.enrolled_physics_classes[cnum].final.questions[i].answer.value == vars[i].get() :
                 score = score + 1
         self.enrolled_physics_classes[cnum].final_grade = score
         cnum = cnum + 1

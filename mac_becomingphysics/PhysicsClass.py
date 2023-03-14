@@ -14,7 +14,7 @@ class PhysicsClass:
     
     def __init__ (self, name, happiness, knowledge, day, lectures, final):
         # Initialize final grade as 0, and update this after finals
-        final_grade = 0
+        self.final_grade = 0
 
         self.name = name
         self.happiness = happiness

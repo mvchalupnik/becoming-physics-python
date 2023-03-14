@@ -8,10 +8,12 @@ from Final import *
 from Question import *
 from Ending import *
 
-A = 0
-B = 1
-C = 2
-D = 3
+
+class TestAnswer(Enum):
+    A = 0
+    B = 1
+    C = 2
+    D = 3
 
 # Texts
 INTRO_TEXT = "Do you want to become physics?????\n"
@@ -80,31 +82,31 @@ COOL_FINAL = Final("Cool Physics",
             [Question("A photon checks into a hotel. The bellhop asks, 'Can I help you with your luggage?'"\
                     "What does the photon say?",
                       "A. Yes, please do.", "B. No thanks, I'm super good at carrying things.",
-                      "C. That's offensive. ", "D. I don't have any, I'm travelling light.", D),
+                      "C. That's offensive. ", "D. I don't have any, I'm travelling light.", TestAnswer.D),
             Question("A neutron walked into a bar and asked 'How much for a drink?' What did the bartender"\
-                     "reply?", "A. $5", "B. For you, no charge", "C. 5 Coulombs", "D. 5 e", B), 
+                     "reply?", "A. $5", "B. For you, no charge", "C. 5 Coulombs", "D. 5 e", TestAnswer.B), 
             Question("Two atoms are walking down the street. One says to the other, 'Hey, I think I lost an "\
                      "electron!' The other says, 'Are you sure?' What does the first one reply?",
                      "A. Yes, I'm positive!", "B. No, you can never be 100 percent sure about anything in life",
-                     "C. No, I'm neutral!", "D. Yes, I'm negatively sure!", A)])
+                     "C. No, I'm neutral!", "D. Yes, I'm negatively sure!", TestAnswer.A)])
 BORING_FINAL = Final("Boring Physics",
               [Question("F = MA. If M = 5 kg and a = 20 m/s, what is F?",
-                "A. 4 Newtons", "B. 100 Newtons", "C. 200 Newtons", "D. This is so boring.", D),
+                "A. 4 Newtons", "B. 100 Newtons", "C. 200 Newtons", "D. This is so boring.", TestAnswer.D),
                Question("If I can travel 100 miles in 40 seconds, how many miles can I travel in 20 seconds?",
                 "A. 0 miles because I'm tired now.", "B. Unrealistic speeds. No one can travel that fast.",
-                "C. 50 miles", "D. 40 miles", B),
+                "C. 50 miles", "D. 40 miles", TestAnswer.B),
                Question("N is a number. E(N) is an equation that gives some other number you want to know. "\
                 "What is the other number you want to know?", "A. N", "B. N(E)", "C. E(N)",
-                "D. I am asleep right now", D)])
+                "D. I am asleep right now", TestAnswer.D)])
 FAKE_FINAL = Final("Controversial Physics",
             [Question("Light is electromagnetic radiation. It travels through the ether, even though "\
                 "we have not detected ether yet. Why have we not detected ether yet?",
                 "A. Ether doesn't exist",
                 "B. We don't have sensitive enough intruments but we will find it someday",
                 "C. Special relativity means that ether exists but is impossible to detect",
-                "D. Ether travels at the speed of light, so it is too fast to detect.", B),
+                "D. Ether travels at the speed of light, so it is too fast to detect.", TestAnswer.B),
             Question("Which field is objectively the best field?",
-                "A. Biology", "B. Chemistry", "C. Physics", "D. Math", C),
+                "A. Biology", "B. Chemistry", "C. Physics", "D. Math", TestAnswer.C),
             Question("The Bohr model is an early model of atomic structure that was later shown to be bad. "\
                 "What is the best reason for why it is bad?",
                 "A. Quantum physics means the Heisenberg Uncertainty principle which is wave particle "\
@@ -113,15 +115,15 @@ FAKE_FINAL = Final("Controversial Physics",
                 "D. If the Bohr model were accurate, that would mean that electrons "\
                 "were \nplanets orbiting nuclei which were suns and little tiny people lived in those planets, "\
                 "\nbut we already know there are only 8 million people on Earth, and \nthere's several hundreds "\
-                "of atoms on Earth, so that means there can't be any more people.", B)])
+                "of atoms on Earth, so that means there can't be any more people.", TestAnswer.B)])
 MATH_FINAL = Final("Math Physics",
-            [Question(" :( ", "A. :( ", "B. :, (", "C. :,,,,(", "D. :/", A),
-             Question("X = ?", "A. 1", "B. 2", "C. 3", "4. -100000", A),
-             Question("math = ?", "A. Mad - d + th", "B. Sad - d + th", "C. Bad - d + th", "D. Rad - d + th", A)])
+            [Question(" :( ", "A. :( ", "B. :, (", "C. :,,,,(", "D. :/", TestAnswer.A),
+             Question("X = ?", "A. 1", "B. 2", "C. 3", "4. -100000", TestAnswer.A),
+             Question("math = ?", "A. Mad - d + th", "B. Sad - d + th", "C. Bad - d + th", "D. Rad - d + th", TestAnswer.A)])
 OCHEM_FINAL = Final("Organic Chemistry",
              [Question("Which reagents will take you from an alkyne to an antimarkovnikov brominated alkene? "\
                 "Please also draw the mechanism.", "A. Br_2", "B. HBr and H_2O_2", "C. Lindlar's catalyst",
-                "D. NaBr, H_2O", B),
+                "D. NaBr, H_2O", TestAnswer.B),
              Question("Order these hydrogens in order of NMR delta shift, from lower shift to higher shift. "\
                 "(Hint: hydrogens that are more delta shifted tend to be attached to electronegative atoms "\
                 "since they are more deshielded from the magnetic field. However, there are exceptions. The "\
@@ -130,7 +132,7 @@ OCHEM_FINAL = Final("Organic Chemistry",
                 "alkane carbon", "B. hydrogen on an alkane carbon,  hydrogen on a phenyl, hydrogen on a phenol,"\
                 " carboxylic acid hydrogen", "C. hydrogen on an alkane carbon, hydrogen on a phenol, hydrogen"\
                 " on a phenyl, carboxylic acid hydrogen", "D. hydrogen on an alkane carbon, hydrogen on a phenyl,"\
-                " carboxylic acid hydrogen, hydrogen on a phenol", B),
+                " carboxylic acid hydrogen, hydrogen on a phenol", TestAnswer.B),
              Question("Order the hydrogens by PKAs, low to high. (Hint: PKA is defined as the - "\
                 "log of the concentration of H+ divided by the concentration of the conjugate base "\
                 "at equilibrium. Strong acids tend to have lower PKAs. Acidity depends on the "\
@@ -139,7 +141,7 @@ OCHEM_FINAL = Final("Organic Chemistry",
                 "A. diketone, phenol, carboxylic acid, hydrogen on a carbon connected to two nitriles", 
                 "B. carboxylic acid, phenol, hydrogen on a carbon connected to two nitriles, diketone", 
                 "C. carboxylic acid, diketone, phenol, hydrogen on a carbon connected to two nitriles ", 
-                "D. carboxylic acid, phenol, diketone, hydrogen on a carbon connected to two nitriles ", C)])
+                "D. carboxylic acid, phenol, diketone, hydrogen on a carbon connected to two nitriles ", TestAnswer.C)])
 
 # Create classes and put them into a class list
 ALL_CLASSES = [PhysicsClass("Cool Physics", 15, 15, 0, 
@@ -151,10 +153,9 @@ ALL_CLASSES = [PhysicsClass("Cool Physics", 15, 15, 0,
 
 
 ##LAB STUFF
-ALL_LABS = [Lab("Big Stuff"), Lab("Medium-Sized Stuff"), Lab("Small Stuff")]
-
-
-
+ALL_LABS = [Lab("Big Stuff", LabType.BIG_STUFF), 
+            Lab("Medium-Sized Stuff", LabType.NONE),
+            Lab("Small Stuff", LabType.SMALL_STUFF)]
 
 
 

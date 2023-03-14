@@ -8,7 +8,7 @@ class LabScenario:
 
     """
     
-    def __init__ (self, scenario, choice1, choice2, tag):
+    def __init__ (self, scenario, choice1, choice2, lab_category):
         # initialize whether the LabScenario has been displayed
         self.has_been_displayed = 0
 
@@ -22,4 +22,4 @@ class LabScenario:
         self.choice2 = choice2
 
         # Whether the LabScenario is associated with Big or Small studies
-        self.tag = tag #TODO change this
+        self.lab_category = lab_category
