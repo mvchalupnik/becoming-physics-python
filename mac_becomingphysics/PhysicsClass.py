@@ -1,9 +1,8 @@
-import tkinter as tk
-from PIL import Image, ImageTk
-import constants as v
 
-class Pclass:
-    """ A Pclass is a PhysicsClass.
+class PhysicsClass:
+    """ A PhysicsClass is a university Physics class that the player can enroll in in order to
+    gain knowledge and affect happiness. At the end of the quarter, the player must take
+    a final exam for each PhysicsClass they have enrolled in.
 
     :param name: The name of the class
     :param hap: The amount of happiness the class gives you per day attended
@@ -13,15 +12,15 @@ class Pclass:
     :param final: The final exam associated with the class
     """
     
-    def __init__ (self, name, hap, kno, day, lecs, final):
+    def __init__ (self, name, happiness, knowledge, day, lectures, final):
         # Initialize final grade as 0, and update this after finals
-        final_grade = 0 #previously finalGrade
+        final_grade = 0
 
         self.name = name
-        self.hap = hap #TODO fix up variable names?
-        self.kno = kno
+        self.happiness = happiness
+        self.knowledge = knowledge
 
         # Start on day 0
         self.day = 0
-        self.lectures = lecs
+        self.lectures = lectures
         self.final = final

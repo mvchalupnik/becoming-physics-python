@@ -1,6 +1,5 @@
 import tkinter as tk
-import FirstScreen as fs
-import constants as v
+from FirstScreen import FirstScreen
 
 def main():
     """ main function for running Becoming Physics game
@@ -9,7 +8,7 @@ def main():
 
     # Create LabelFrame from TKinter
     lf1 = tk.LabelFrame(top)
-    app1 = fs.FirstScreen(lf1)
+    app1 = FirstScreen(lf1)
 
     # Place the LabelFrame
     lf1.grid()

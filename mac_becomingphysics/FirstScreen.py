@@ -1,6 +1,7 @@
 import tkinter as tk
 from PIL import Image, ImageTk
-from constants import imgwidth, imgheight, introtext
+from constants import IMG_HEIGHT, IMG_WIDTH
+from game_text import INTRO_TEXT
 from Game import *
 
 """
@@ -16,7 +17,7 @@ class FirstScreen(tk.Frame, tk.Tk):
         self.grid()
         self.create_first_screen()
         
-    def startGame(self):
+    def start_game(self):
         """ Destroys the FirstScreen canvas and associated objects and instantiates the
         Game class
         """
@@ -37,15 +38,15 @@ class FirstScreen(tk.Frame, tk.Tk):
         self.pimage = ImageTk.PhotoImage(self.image)
 
         # Make a canvas
-        self.canvas = tk.Canvas(self, width=imgwidth + 100, height=imgheight + 100)
+        self.canvas = tk.Canvas(self, width=IMG_WIDTH + 100, height=IMG_HEIGHT + 100)
 
         # Place the image on the canvas
-        self.canvas.create_image(imgheight, imgwidth, image=self.pimage)
+        self.canvas.create_image(IMG_HEIGHT, IMG_WIDTH, image=self.pimage)
 
         # Place the canvas
         self.canvas.grid(row=0, column=1)
-        self.lab1 = tk.Label(self, text=introtext)
-        self.yesbut = tk.Button(self, text='Yes', command=self.startGame) # TODO don't abbreviate Button
+        self.lab1 = tk.Label(self, text=INTRO_TEXT)
+        self.yesbut = tk.Button(self, text='Yes', command=self.start_game) #TODO
         self.nobut = tk.Button(self, text='No', command=self.quit)
             
         self.lab1.grid(row=1, column=1)
