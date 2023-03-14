@@ -14,11 +14,15 @@ import pdb
 # Set to False for "endless mode" (no endgame triggered) or debugging; True for normal play
 debug_endgame_off = True
 
+class EndGameStatus(Enum):
+    CONTINUE = 0
+    NEGATIVE_HAPPINESS = 1
+    START_FINALS = 2
+
 class Game(tk.Frame):
-    """ TODO description
+    """ Displays and runs the primary portion of the Becoming Physics Game
 
     """
-
     # Initial game stats
     happiness = 100
     knowledge = 0
@@ -35,123 +39,126 @@ class Game(tk.Frame):
          
         # Make a tkinter canvas
         self.portrait.canvas = tk.Canvas(self.portrait, width= SMALL_IMG_WIDTH, height= SMALL_IMG_HEIGHT)
-        self.portrait.haplab = tk.Label(self.portrait, text = "Happiness: "+ str(self.happiness))
-        self.portrait.knolab = tk.Label(self.portrait, text = "Knowledge: " + str(self.knowledge))
-        self.portrait.reslab = tk.Label(self.portrait, text = "Research: " + str(self.research))
-        self.portrait.daylab = tk.Label(self.portrait, text = "Day: " + str(self.day))
-        self.portrait.classlab = tk.Label(self.portrait, text = "Classes: ")
+        self.portrait.happiness_label = tk.Label(self.portrait, text = "Happiness: "+ str(self.happiness))
+        self.portrait.knowledge_label = tk.Label(self.portrait, text = "Knowledge: " + str(self.knowledge))
+        self.portrait.research_label = tk.Label(self.portrait, text = "Research: " + str(self.research))
+        self.portrait.day_label = tk.Label(self.portrait, text = "Day: " + str(self.day))
+        self.portrait.class_label = tk.Label(self.portrait, text = "Classes: ")
          
-        self.hapstrvar = tk.StringVar()
-        self.knostrvar = tk.StringVar()
-        self.resstrvar = tk.StringVar()
-        self.daystrvar = tk.StringVar()
-        
         self.show_main_choices()
     
-    def show_stat_changes(self,h,k,r):
-        """
-        """
-        self.portrait.haplab.config(text= "Happiness: "+ str(self.happiness) + " + " + str(h))
-        if h >= 0:
-            self.portrait.haplab.config(bg = "green")
-        else:
-            self.portrait.haplab.config(bg = "red")
-            
-        self.portrait.knolab.config(text= "Knowledge: "+ str(self.knowledge) + " + " + str(k))
-        if k >= 0:
-            self.portrait.knolab.config(bg="green")
-        else:
-            self.portrait.knolab.config(bg="red")
+    def show_stat_changes(self, delta_h, delta_k, delta_r):
+        """ Show changes in players stats after lab or class event.
+        Also shows advancement of day by + 1
         
-        self.portrait.reslab.config(text= "Research: "+ str(self.research) + " + " + str(r))
-        if r >=0:
-            self.portrait.reslab.config(bg="green")
+        :param delta_h: The change in happiness
+        :param delta_k: The change in knowledge
+        :param delta_r: The change in research
+        """
+        self.portrait.happiness_label.config(text= "Happiness: "+ str(self.happiness) + " + " + str(delta_h))
+        if delta_h >= 0:
+            self.portrait.happiness_label.config(bg = "green")
         else:
-            self.portrait.reslab.config(bg="red")
+            self.portrait.happiness_label.config(bg = "red")
             
-        self.portrait.daylab.config(text= "Day: "+ str(self.day) + " + 1")    
+        self.portrait.knowledge_label.config(text= "Knowledge: "+ str(self.knowledge) + " + " + str(delta_k))
+        if delta_k >= 0:
+            self.portrait.knowledge_label.config(bg="green")
+        else:
+            self.portrait.knowledge_label.config(bg="red")
+        
+        self.portrait.research_label.config(text= "Research: "+ str(self.research) + " + " + str(delta_r))
+        if delta_r >=0:
+            self.portrait.research_label.config(bg="green")
+        else:
+            self.portrait.research_label.config(bg="red")
+            
+        self.portrait.day_label.config(text= "Day: "+ str(self.day) + " + 1")    
     
     def update_portrait(self):    
-        """ Update portrait and displayed stats. 
+        """ Update portrait and display stats. 
         """
-        self.portrait.image = Image.open('50by50test.png') #open the image
+        # Open character portrait image
+        self.portrait.image = Image.open('50by50test.png')
         self.portrait.pimage = ImageTk.PhotoImage(self.portrait.image)
-        
+
         # Place the image on the canvas
         self.portrait.canvas.create_image(0,0,image=self.portrait.pimage, anchor= tk.NW)
         # Place the canvas
         self.portrait.canvas.grid(row=0, column=0, sticky=tk.W)
 
         # Create player Happiness label
-        self.portrait.haplab.config(text = "Happiness: " + str(self.happiness))
-        self.portrait.haplab.config(bg = "white")
-        self.portrait.haplab.grid(row=1, column=0, sticky=tk.W)
+        self.portrait.happiness_label.config(text = "Happiness: " + str(self.happiness))
+        self.portrait.happiness_label.config(bg = "white")
+        self.portrait.happiness_label.grid(row=1, column=0, sticky=tk.W)
 
         # Create player Knowledge label
-        self.portrait.knolab.config(text = "Knowledge: " + str(self.knowledge))
-        self.portrait.knolab.config(bg = "white")
-        self.portrait.knolab.grid(row=2, column=0, sticky=tk.W)
+        self.portrait.knowledge_label.config(text = "Knowledge: " + str(self.knowledge))
+        self.portrait.knowledge_label.config(bg = "white")
+        self.portrait.knowledge_label.grid(row=2, column=0, sticky=tk.W)
 
         # Create player Research label
-        self.portrait.reslab.config(text = "Research: " + str(self.research))
-        self.portrait.reslab.config(bg = "white")
-        self.portrait.reslab.grid(row=3, column = 0, sticky=tk.W)
+        self.portrait.research_label.config(text = "Research: " + str(self.research))
+        self.portrait.research_label.config(bg = "white")
+        self.portrait.research_label.grid(row=3, column = 0, sticky=tk.W)
 
         # Create a day label
-        self.portrait.daylab.config(text="Day: " + str(self.day))
-        self.portrait.daylab.grid(row=4, column=0, sticky=tk.W)
+        self.portrait.day_label.config(text="Day: " + str(self.day))
+        self.portrait.day_label.grid(row=4, column=0, sticky=tk.W)
         
         # Place Classes label
-        self.portrait.classlab.grid(row=6, column=0, sticky=tk.W)
-        for i, item in enumerate(self.enrolled_physics_classes):
-            self.portrait.class2lab = tk.Label(self.portrait, text = self.enrolled_physics_classes[i].name)
-            self.portrait.class2lab.grid(row=7+i, column=0)
-        self.portrait.researchlab = tk.Label(self.portrait, text = "Lab : " + self.joined_research_lab.name)
-        self.portrait.researchlab.grid(row=5, column=0, sticky=tk.W)
-        
+        self.portrait.class_label.grid(row=6, column=0, sticky=tk.W)
+
+        # Display all enrolled classes
+        for i, enrolled_physics_class in enumerate(self.enrolled_physics_classes):
+            self.portrait.enrolled_classes_label = tk.Label(self.portrait, text=enrolled_physics_class.name)
+            self.portrait.enrolled_classes_label.grid(row=7+i, column=0)
+        # Display research lab
+        self.portrait.joined_lab_label = tk.Label(self.portrait, text = "Lab: " + self.joined_research_lab.name)
+        self.portrait.joined_lab_label.grid(row=5, column=0, sticky=tk.W)        
         self.portrait.grid(row=0,column=0)
         
     def show_main_choices(self):
-        """
+        """ Show the main screen, showing the player's main choices of joining lab and classes, or attending
+        lab or classes.
         """
         self.update_portrait()
 
-        ###Actions
+        # Create Frame showing player actions
         self.mainframe = tk.Frame(self)
-        
-        self.mainframe.laba = tk.Label(self.mainframe,
+
+        self.mainframe.intro_label = tk.Label(self.mainframe,
                                        text = "Welcome to University School!\n Here you can take the "\
                                        "first steps to becoming a physics. \nWhat would you like to do today?")
         
         if len(self.enrolled_physics_classes) == 0:
-            # If player has not joined any classes, display join classes option
-            self.mainframe.registerbut = tk.Button(self.mainframe,
-                                                   text = "Register for Classes",
-                                                   command = self.register_classes)
-            self.mainframe.registerbut.grid(row=2, column = 0)
+            # If player has not joined any classes, display Register for classes option
+            self.mainframe.register_button = tk.Button(self.mainframe,
+                                                   text="Register for Classes",
+                                                   command=self.register_classes)
+            self.mainframe.register_button.grid(row=2, column=0)
         else:
             # If player has joined classes, display option to go to class
-            self.mainframe.gotoclassbut = tk.Button(self.mainframe, text = "Go to Class", command = self.go_to_class)
-            self.mainframe.gotoclassbut.grid(row=2, column = 0)
+            self.mainframe.go_to_class_button = tk.Button(self.mainframe, text="Go to Class", command=self.go_to_class)
+            self.mainframe.go_to_class_button.grid(row=2, column=0)
             
-        ## if no lab, join a lab, or else go to lab
+        # If player is not in a lab, display option to join a lab. Otherwise, display option to go to lab.
         if self.joined_research_lab.name == "none":
-            self.mainframe.joinbut = tk.Button(self.mainframe, text = "Join a Lab", command = self.join_lab)
-            self.mainframe.joinbut.grid(row=3, column=0)
+            self.mainframe.join_lab_button = tk.Button(self.mainframe, text="Join a Lab", command=self.join_lab)
+            self.mainframe.join_lab_button.grid(row=3, column=0)
         else:
-            self.mainframe.gotolabbut = tk.Button(self.mainframe, text = "Go to Lab", command = self.go_to_lab) 
-            self.mainframe.gotolabbut.grid(row = 3, column = 0)
+            self.mainframe.go_to_lab_button = tk.Button(self.mainframe, text="Go to Lab", command=self.go_to_lab) 
+            self.mainframe.go_to_lab_button.grid(row=3, column=0)
 
-        self.mainframe.laba.grid(row=1, column=0)
+        self.mainframe.intro_label.grid(row=1, column=0)
         self.mainframe.grid(row=1, column=0)
 
     def check_boundaries(self):
-        """ After player stats are changed, validate the changes
-
-
+        """ After player stats are changed, validate the changes. In particular, no stats may exceed 100, so cap there, 
+        and no stats may be less than 0, so place a floor there.
         """
         
-        ###Can't have any stats greater than 100
+        # Cap stats at 100
         if self.happiness > 100 :
             self.happiness = 100
         if self.knowledge > 100 :
@@ -159,16 +166,17 @@ class Game(tk.Frame):
         if self.research > 100 :
             self.research = 100
         
-        ##Can't have (non-happiness) stats less than 0
+        # Set floor for stats at 0, except for the happiness stat
         if self.knowledge < 0:
             self.knowledge = 0
         if self.research < 0:
             self.research = 0
-        
+
         self.update_portrait()
-        ###End-game conditions
         
     def check_for_endgame(self):
+        """ Check for endgame conditions
+        """
         # End game is triggered if player happiness reaches 0 or less
         if self.happiness <= 0 and debug_endgame_off:
             return 1
@@ -299,10 +307,10 @@ class Game(tk.Frame):
 
         # Check for endgame
         status = self.check_for_endgame()
-        if status != 0 : 
-            self.end_game(status)
-        else:
+        if status == EndGameStatus.CONTINUE:
             self.show_main_choices()
+        else:
+            self.end_game(status)
     
     def in_class(self, i):
         """ Display this if you are in class
@@ -379,8 +387,7 @@ class Game(tk.Frame):
         
         ##check Boundaries!
         self.check_boundaries()
-        status = self.check_for_endgame() #1 for happiness low, 2 for reached day 10
-        # (TODO we aren't using the functionality of 2 reached for day 10)
+        status = self.check_for_endgame()
         if status != 0 : 
             self.end_game(status)
         else:
@@ -642,20 +649,19 @@ class Game(tk.Frame):
         self.endf.grid(column=1, row=0)
     
     def end_game(self, status):
-        """ 
+        """ End the game, with the ending determined by the ending status Enum provided.
         """
         self.check_boundaries()
-        if status == 1 :
+        if status == EndGameStatus.NEGATIVE_HAPPINESS:
+            # If Happiness < 0, trigger SAD_ENDING
             self.endff = tk.Frame(self)
             self.endff.flab = tk.Message(self.endff, text="You are too sad to continue!! :( :( ")
             self.endff.fbut = tk.Button(self.endff, text="What happens now?", command = lambda: self.end_screen(SAD_ENDING))
             self.endff.grid(column=1, row=0)
             self.endff.flab.grid()
             self.endff.fbut.grid()
-            ##happiness ending ##endf screen, continue button
         
-        elif status == 2 and len(self.enrolled_physics_classes) != 0:
-
+        elif status == EndGameStatus.START_FINALS and len(self.enrolled_physics_classes) != 0:
             # Trigger the start of Finals
             self.endff = tk.Frame(self)
             self.endff.flab = tk.Message(self.endff,
