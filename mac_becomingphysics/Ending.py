@@ -1,11 +1,16 @@
-import tkinter as tk
-from PIL import Image, ImageTk
-import variables as v
-from Pclasses import *
+"""
+Ending.py
+"""
 
 class Ending:
-    def __init__ (self, title, pic, text):
-        self.title = title ##string
-        self.pic = pic ##a '' file path
-        self.text = text ##string
-        
+    """ Ending gives the title, image, and text to display for a given ending scenario.
+
+    :param title: String containing the ending title
+    :param image: String containing a path to the ending picture
+    :param text: String containing the ending text
+    """
+
+    def __init__ (self, ending_title, image, ending_text):
+        self.ending_title = ending_title
+        self.image = image
+        self.ending_text = ending_text

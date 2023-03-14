@@ -1,11 +1,14 @@
-import tkinter as tk
-from PIL import Image, ImageTk
-import variables as v
-#from Pclass import *
+"""
+Final.py
+"""
 
 class Final:
-    def __init__ (self, pclass, question1, question2, question3 ):
-        self.pclass = pclass #string
-        self.qs = [question1, question2, question3] #List of Questions
-        #self.after = after #string
-        
+    """ Final contains a PhysicsClass, and a list of three Questions for the associated Final
+
+    :param pclass: A PhysicsClass which the Final is associated with
+    :param questions: A list of three Questions for the final
+
+    """
+    def __init__ (self, pclass, questions):
+        self.pclass = pclass #string ## TODO IS THIS A STRING??
+        self.questions = questions #List of Questions

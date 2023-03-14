@@ -1,17 +1,22 @@
-import variables as v
+"""
+LabScenario.py
+"""
 
 class LabScenario:
-    ##Tag with big/small 
-    ##class methods
-    seen = 0
-    sibling = -1 ##a sibling is the same labscenario but with different outcomes
-    ##if there is a sibling, this number will be changed to be the index (of lss) of the sibling
+    """ LabScenario describes a scenario that happens to you while you are working in lab.
+        LabScenarios have associated Choices and the player's choice will affect player stats.
+
+    """
     
     def __init__ (self, scenario, choice1, choice2, tag):
+        # initialize whether the LabScenario has been displayed
+        self.has_been_displayed = 0 #previously, seen
+
+        # A sibling is the same LabScenario but with different outcomes
+        # If there is a sibling, this number will be changed to the index (of lss) of the sibling
+        self.sibling = -1
+
         self.scenario = scenario
         self.choice1 = choice1
         self.choice2 = choice2
         self.tag = tag
-
-
-    

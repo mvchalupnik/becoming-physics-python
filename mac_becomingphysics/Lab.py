@@ -1,6 +1,6 @@
 import tkinter as tk
 from PIL import Image, ImageTk
-import variables as v
+import constants as v
 from LabScenario import *
 from Choice import *
 import random as random

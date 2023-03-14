@@ -1,6 +1,6 @@
 import tkinter as tk
 from PIL import Image, ImageTk
-import variables as v
+import constants as v
 from Pclasses import *
 from Lab import *
 from Pclass import *
@@ -15,7 +15,6 @@ class Game(tk.Frame):
     happiness = 100
     knowledge = 0
     research = 0
-    ##sanity = 50
     characterPortrait = Image.open('100by100test.png')
     day = 0
     myPclasses = [] ##list of pClass (new class)
@@ -407,7 +406,7 @@ class Game(tk.Frame):
         self.endf2.pclab.grid()
  
         for i in range(0,3) :
-            self.endf2.q = tk.Message(self.endf2, text = str(i+1) + ". " + pclass.final.qs[i].qtext, aspect = 1200, font = "Courier 14")
+            self.endf2.q = tk.Message(self.endf2, text = str(i+1) + ". " + pclass.final.questions[i].qtext, aspect = 1200, font = "Courier 14")
             self.endf2.q.grid(sticky = tk.W)
             ##var.append(tk.IntVar())
             for j in range(0, 4):
@@ -420,7 +419,7 @@ class Game(tk.Frame):
                 oldvar = tk.IntVar()
                 oldvar = vars[i]
                 
-                self.endf2.R1 = tk.Radiobutton(self.endf2, text = pclass.final.qs[i].answers[j], font = "Courier 12", justify = tk.LEFT, variable = oldvar, value = j)
+                self.endf2.R1 = tk.Radiobutton(self.endf2, text = pclass.final.questions[i].answers[j], font = "Courier 12", justify = tk.LEFT, variable = oldvar, value = j)
                 
                 ##vars[i] = 0,1,2, or 3 depending on what was selected
                 #if vars[i].get() == j:
@@ -431,7 +430,7 @@ class Game(tk.Frame):
                     #self.endf2.R1.select()
  
 
-                if self.myPclasses[cnum].final.qs[i].answer == j:
+                if self.myPclasses[cnum].final.questions[i].answer == j:
                     ##green
                     #print("green control")
                     self.endf2.R1.config(bg = "green")
@@ -453,7 +452,7 @@ class Game(tk.Frame):
         ##Make and store grade
         score = 0
         for i in range(0,3) :
-            if self.myPclasses[cnum].final.qs[i].answer == vars[i].get() :
+            if self.myPclasses[cnum].final.questions[i].answer == vars[i].get() :
                 #print("for debugging purposes")
                 score = score + 1
         self.myPclasses[cnum].finalGrade = score ###Maybe change... implement curve? #TODO
@@ -585,20 +584,17 @@ class Game(tk.Frame):
         self.endf.pclab.grid()
         var = []
         for i in range(0,3) :
-            self.endf.q = tk.Message(self.endf, text = str(i+1) + ". " + pclass.final.qs[i].qtext, aspect = 1200, font = "Courier 14")
+            self.endf.q = tk.Message(self.endf, text = str(i+1) + ". " + pclass.final.questions[i].qtext, aspect = 1200, font = "Courier 14")
             self.endf.q.grid(sticky = tk.W)
             var.append(tk.IntVar())
             for j in range(0, 4):
-                #self.fr.RadioVar.append(tk.IntVar())
-                self.endf.R1 = tk.Radiobutton(self.endf, text = pclass.final.qs[i].answers[j], font = "Courier 12", justify = tk.LEFT, variable = var[i], value = j )
+                self.endf.R1 = tk.Radiobutton(self.endf, text = pclass.final.questions[i].answers[j], font = "Courier 12", justify = tk.LEFT, variable = var[i], value = j )
                 self.endf.R1.grid(sticky = tk.W)
         self.endf.gradebut = tk.Button(self.endf, text="Hand in", command = lambda :self.gradeFinal(var,cnum))
         self.endf.gradebut.grid()
-        #self.endf.qlabel = tk.Label(self.endf, text=)
         self.endf.grid(column=1, row=0)
     
     def endGame(self, status):
-        #self.portrait.grid_remove() ###Hmmmmmmmmmmm TODO
         self.checkBoundaries() ##changed from updatePortrait
         ##print("now status is " + str(status))
         if status == 1 :
