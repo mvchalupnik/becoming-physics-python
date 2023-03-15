@@ -407,7 +407,8 @@ class Game(tk.Frame):
                   command = lambda:self.in_class(var.get())).grid(row=2 + len(self.enrolled_physics_classes),
                   column=0)
         
-        self.event_frame.labd = tk.Label(self.event_frame, text = CHOOSE_CLASS_TEXT)
+        # Display text prompting to choose which class to attend
+        self.event_frame.labd = tk.Label(self.event_frame, text=CHOOSE_CLASS_TEXT)
         self.event_frame.labd.grid(row=0, column=0)
         
         self.event_frame.grid(row=0, column=1)
@@ -491,83 +492,96 @@ class Game(tk.Frame):
         
             self.event_frame.grid(row=0, column=1)
     
-    def grade_final(self, vars, class_index):
+    def grade_final(self, completed_final, class_index):
         """ Grade a final for a given PhysicsClass. Update player stats.
-
-
+        
+        :param completed_final: A list of IntVars() passed containing player's completed answers to the final
+        :param class_index: The class index of enrolled_physics_classes pointing to the desired class
         """
         # Clean up frame
-        self.endf.grid_remove()
+        self.finals_frame.grid_remove()
 
         # get class from list of player's enrolled classes
         physics_class = self.enrolled_physics_classes[class_index]
 
+        # Create a new frame to display grades
+        self.grade_frame = tk.Frame(self)
+        self.grade_frame.physics_class_label = tk.Label(self.grade_frame,
+                                                        text=physics_class.name + " Final Answers",
+                                                        font ="Arial 16")
+        self.grade_frame.physics_class_label.grid()
 
-        self.endf2 = tk.Frame(self)
-        
-        self.endf2.pclab = tk.Label(self.endf2, text=physics_class.name + " Final Answers", font ="Arial 16")
-        self.endf2.pclab.grid()
+        # Display each question
+        for question_index in range(0, len(physics_class.final.questions)):
+            question = physics_class.final.questions[question_index]
 
-        # Display the correct answers 
-        for i in range(0,3) :
-            finals_text = str(i+1) + ". " + physics_class.final.questions[i].qtext
-            self.endf2.q = tk.Message(self.endf2,
-                                      text = finals_text,
-                                      aspect = 1200,
-                                      font = "Courier 14")
-            self.endf2.q.grid(sticky = tk.W)
-            for j in range(0, 4):
-                ##if it's the correct answer,make color green
-                
-                ##if it's the wrong answer, make color red
-                ##Leave the selected thing as is
-                
-                oldvar = tk.IntVar()
-                oldvar = vars[i]
-                
-                radio_button_text = physics_class.final.questions[i].answers[j]
-                self.endf2.radio_button = tk.Radiobutton(self.endf2,
+            finals_text = str(question_index+1) + ". " + question.question_text
+            self.grade_frame.question_message=tk.Message(self.grade_frame,
+                                                         text=finals_text,
+                                                         aspect=1200,
+                                                         font="Courier 14")
+            self.grade_frame.question_message.grid(sticky = tk.W)
+
+            # Loop over each answer and display the correct answer
+            for answer_index in range(0, len(question.answers)):                
+                player_answer = completed_final[question_index]
+                radio_button_text = question.answers[answer_index]
+
+                # Place the radio buttons back and keep the player's answer selected
+                self.grade_frame.radio_button = tk.Radiobutton(self.grade_frame,
                                                text = radio_button_text,
                                                font = "Courier 12",
                                                justify = tk.LEFT,
-                                               variable = oldvar,
-                                               value = j)
-                
-                if physics_class.final.questions[i].answer.value == j:
-                    ##green
-                    self.endf2.radio_button.config(bg = "green")
+                                               variable = player_answer,
+                                               value = answer_index)
+
+                if question.correct_answer.value == answer_index:
+                    # Make the correct answer appear in green
+                    self.grade_frame.radio_button.config(bg = "green")
                 else:
-                    ##red
-                    self.endf2.radio_button.config(bg = "red")
+                    # Make all wrong answers appear in red
+                    self.grade_frame.radio_button.config(bg = "red")
                 
-                self.endf2.radio_button.grid(sticky = tk.W)
-                
-        self.endf2.gradebut = tk.Button(self.endf2, text="Continue", command = lambda :self.do_final(class_index))
-        self.endf2.gradebut.grid()
-        self.endf2.grid(column=1, row=0)
+                self.grade_frame.radio_button.grid(sticky = tk.W)
         
-        ##Make and store grade
+        # Create Continue button
+        self.grade_frame.grade_button = tk.Button(self.grade_frame,
+                                                  text="Continue",
+                                                  command = lambda:self.do_final(class_index))
+        self.grade_frame.grade_button.grid()
+        self.grade_frame.grid(column=1, row=0)
+        
+        # Calculate and store grade
         score = 0
-        for i in range(0,3):
-            if physics_class.final.questions[i].answer.value == vars[i].get() :
+        for question_index in range(0, len(physics_class.final.questions)):
+            if physics_class.final.questions[question_index].correct_answer.value == completed_final[question_index].get():
                 score = score + 1
         physics_class.final_grade = score
+
+        # Increase class_index by 1 for when continue button is pushed above
         class_index = class_index + 1
     
     def determine_ending(self):
+        """ Determine the earned ending based on player stats
         """
-        """
+
         if(self.happiness >= 90 and self.knowledge >= 90 and self.research >= 90):
+            # Best possible ending
             return EQUATION_ENDING
         elif(self.knowledge >= 80 and self.happiness >= 50 and self.research >= 50):
+            # Okay ending
             return GRAD_SCHOOL_ENDING
-        elif(self.research >= 80) :
+        elif(self.research >= 80):
+            # Okay ending
             return SCOPE_ENDING
         else:
+            # Bad ending
             return BAD_STUDENT_ENDING
     
     def end_screen(self, end):
-        """
+        """ Display ending screen based on end
+
+        
         """
 
         self.endd = tk.Frame(self)
@@ -641,7 +655,7 @@ class Game(tk.Frame):
     def trigger_end_screen(self, end):
         """
         """
-        self.endf.grid_remove()
+        self.finals_frame.grid_remove()
         self.end_screen(end)
         
     def do_final(self, cnum):
@@ -649,8 +663,8 @@ class Game(tk.Frame):
         """
         self.endff.grid_remove()
         if cnum > 0 :
-            self.endf2.grid_remove() ##THERE MUST BE A BETTER WAY :( TODO
-        self.endf = tk.Frame(self)
+            self.grade_frame.grid_remove() ##THERE MUST BE A BETTER WAY :( TODO
+        self.finals_frame = tk.Frame(self)
 
         if cnum == len(self.enrolled_physics_classes):
             ##we have reached the end of finals.
@@ -660,7 +674,7 @@ class Game(tk.Frame):
             for index, physics_class in enumerate(self.enrolled_physics_classes):
                 gpa = gpa + physics_class.final_grade
                 letter_grade_text = physics_class.name + ": " + self.get_letter_grade(physics_class.final_grade)
-                tk.Label(self.endf, text = letter_grade_text).grid(row=1 + index)
+                tk.Label(self.finals_frame, text = letter_grade_text).grid(row=1 + index)
 
             # Find total GPA
             gpa = float(gpa) / len(self.enrolled_physics_classes)
@@ -671,39 +685,39 @@ class Game(tk.Frame):
             self.check_boundaries()
             
             end = self.determine_ending()
-            tk.Label(self.endf, text = "Your Grades Are in...", font="Ariel 14").grid(column=0 ,row=0)
+            tk.Label(self.finals_frame, text = "Your Grades Are in...", font="Ariel 14").grid(column=0 ,row=0)
 
             grade_text = "Your GPA is: " + str(gpa) + "\nThis has affected your happiness"
-            self.endf.gradelabel = tk.Label(self.endf, text = grade_text)
-            self.endf.buttt = tk.Button(self.endf, text = "Continue", command = lambda: self.trigger_end_screen(end))
-            self.endf.gradelabel.grid()
-            self.endf.buttt.grid()
-            self.endf.grid(column=2, row=0) 
+            self.finals_frame.gradelabel = tk.Label(self.finals_frame, text = grade_text)
+            self.finals_frame.buttt = tk.Button(self.finals_frame, text = "Continue", command = lambda: self.trigger_end_screen(end))
+            self.finals_frame.gradelabel.grid()
+            self.finals_frame.buttt.grid()
+            self.finals_frame.grid(column=2, row=0) 
             return
         
         ##Do a final for class number cnum
         pclass = self.enrolled_physics_classes[cnum]
 
-        self.endf.pclab = tk.Label(self.endf, text=pclass.name + " Final", font ="Arial 14")
-        self.endf.pclab.grid()
+        self.finals_frame.physics_class_label = tk.Label(self.finals_frame, text=pclass.name + " Final", font ="Arial 14")
+        self.finals_frame.physics_class_label.grid()
         var = []
         for i in range(0,3) :
-            finals_question_text = str(i+1) + ". " + pclass.final.questions[i].qtext
-            self.endf.q = tk.Message(self.endf, text = finals_question_text, aspect = 1200, font = "Courier 14")
-            self.endf.q.grid(sticky = tk.W)
+            finals_question_text = str(i+1) + ". " + pclass.final.questions[i].question_text
+            self.finals_frame.question_message = tk.Message(self.finals_frame, text = finals_question_text, aspect = 1200, font = "Courier 14")
+            self.finals_frame.question_message.grid(sticky = tk.W)
             var.append(tk.IntVar())
             for j in range(0, 4):
                 finals_question_answer = pclass.final.questions[i].answers[j]
-                self.endf.radio_button = tk.Radiobutton(self.endf,
+                self.finals_frame.radio_button = tk.Radiobutton(self.finals_frame,
                                               text = finals_question_answer,
                                               font = "Courier 12",
                                               justify = tk.LEFT,
                                               variable = var[i],
                                               value = j)
-                self.endf.radio_button.grid(sticky = tk.W)
-        self.endf.gradebut = tk.Button(self.endf, text="Hand in", command = lambda: self.grade_final(var,cnum))
-        self.endf.gradebut.grid()
-        self.endf.grid(column=1, row=0)
+                self.finals_frame.radio_button.grid(sticky = tk.W)
+        self.finals_frame.grade_button = tk.Button(self.finals_frame, text="Hand in", command = lambda: self.grade_final(var,cnum))
+        self.finals_frame.grade_button.grid()
+        self.finals_frame.grid(column=1, row=0)
     
     def end_game(self, status):
         """ End the game, with the ending determined by the ending status Enum provided.
