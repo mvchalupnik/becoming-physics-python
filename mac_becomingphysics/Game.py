@@ -666,20 +666,24 @@ class Game(tk.Frame):
         self.finals_frame.grid_remove()
         self.end_screen(end)
         
-    def do_final(self, cnum):
-        """ Do a final 
+    def do_final(self, class_index):
+        """ Set up a final for a given PhysicsClass for the player to complete
 
-        
+        :param class_index:  The class index of enrolled_physics_classes pointing to the desired class
         """
-        self.endff.grid_remove()
-        if cnum > 0 :
-            self.grade_frame.grid_remove() ##THERE MUST BE A BETTER WAY :( TODO
+        # Clean up end frame
+        self.check_end_frame.grid_remove()
+
+        # Clean up old frames (recursive call of do_final)
+        if class_index > 0 :
+            self.grade_frame.grid_remove()
+
+        # Create Finals frame
         self.finals_frame = tk.Frame(self)
 
-        if cnum == len(self.enrolled_physics_classes):
-            ##we have reached the end of finals.
-
-            ###Determine gpa and display lettergrade of each class
+        # If class_index is equal to the size of the list of enrolled classes, we have finished finals
+        if class_index == len(self.enrolled_physics_classes):
+            # Determine gpa and display lettergrade of each class
             gpa = 0
             for index, physics_class in enumerate(self.enrolled_physics_classes):
                 gpa = gpa + physics_class.final_grade
@@ -690,70 +694,93 @@ class Game(tk.Frame):
             gpa = float(gpa) / len(self.enrolled_physics_classes)
             gpa = gpa * 4./3.
             
-            ##Determine happiness change based on gpa
+            # Determine happiness change based on gpa
             self.adjust_happiness_from_gpa(gpa)
             self.check_boundaries()
             
+            # Determine player ending based on final stats
             end = self.determine_ending()
+
+            # Display final grades
             tk.Label(self.finals_frame, text = "Your Grades Are in...", font="Ariel 14").grid(column=0 ,row=0)
 
             grade_text = "Your GPA is: " + str(gpa) + "\nThis has affected your happiness"
             self.finals_frame.gradelabel = tk.Label(self.finals_frame, text = grade_text)
-            self.finals_frame.buttt = tk.Button(self.finals_frame, text = "Continue", command = lambda: self.trigger_end_screen(end))
+            self.finals_frame.final_grade_button = tk.Button(self.finals_frame, 
+                                                             text = "Continue",
+                                                             command = lambda: self.trigger_end_screen(end))
             self.finals_frame.gradelabel.grid()
-            self.finals_frame.buttt.grid()
+            self.finals_frame.final_grade_button.grid()
             self.finals_frame.grid(column=2, row=0) 
             return
         
-        ##Do a final for class number cnum
-        pclass = self.enrolled_physics_classes[cnum]
+        # Otherwise, do a final for class number class_index
+        physics_class = self.enrolled_physics_classes[class_index]
 
-        self.finals_frame.physics_class_label = tk.Label(self.finals_frame, text=pclass.name + " Final", font ="Arial 14")
+        self.finals_frame.physics_class_label = tk.Label(self.finals_frame,
+                                                         text=physics_class.name + " Final",
+                                                         font ="Arial 14")
         self.finals_frame.physics_class_label.grid()
-        var = []
-        for i in range(0,3) :
-            finals_question_text = str(i+1) + ". " + pclass.final.questions[i].question_text
-            self.finals_frame.question_message = tk.Message(self.finals_frame, text = finals_question_text, aspect = 1200, font = "Courier 14")
+        
+        # Create a list of IntVars and loop through to place these in three RadioButton questions
+        player_answers = []
+        for question_index in range(0,len(physics_class.final.questions)):
+            question = physics_class.final.questions[question_index]
+            finals_question_text = str(question_index+1) + ". " + question.question_text
+            self.finals_frame.question_message = tk.Message(self.finals_frame, 
+                                                            text = finals_question_text,
+                                                            aspect = 1200,
+                                                            font = "Courier 14")
             self.finals_frame.question_message.grid(sticky = tk.W)
-            var.append(tk.IntVar())
-            for j in range(0, 4):
-                finals_question_answer = pclass.final.questions[i].answers[j]
+            player_answers.append(tk.IntVar())
+
+            # Loop through each of four possible answers
+            for answer_index in range(0, len(question.answers)):
+                finals_question_answer = question.answers[answer_index]
                 self.finals_frame.radio_button = tk.Radiobutton(self.finals_frame,
                                               text = finals_question_answer,
                                               font = "Courier 12",
                                               justify = tk.LEFT,
-                                              variable = var[i],
-                                              value = j)
+                                              variable = player_answers[question_index],
+                                              value = answer_index)
                 self.finals_frame.radio_button.grid(sticky = tk.W)
-        self.finals_frame.grade_button = tk.Button(self.finals_frame, text="Hand in", command = lambda: self.grade_final(var,cnum))
+        # Create button to hand in exam
+        self.finals_frame.grade_button = tk.Button(self.finals_frame,
+                                                   text="Hand in",
+                                                   command = lambda: self.grade_final(player_answers, class_index))
         self.finals_frame.grade_button.grid()
         self.finals_frame.grid(column=1, row=0)
     
     def end_game(self, status):
-        """ Either end the game, or trigger finals, with the ending determined by the ending status Enum provided.
+        """ Either end the game, or trigger finals, with particular route determined by status Enum provided.
+
+        :param status: An EndGameStatus Enum to determine which route to take
         """
         self.check_boundaries()
         if status == EndGameStatus.NEGATIVE_HAPPINESS:
             # If Happiness < 0, trigger SAD_ENDING
-            self.endff = tk.Frame(self)
-            self.endff.flab = tk.Message(self.endff, text="You are too sad to continue!! :( :( ")
-            self.endff.fbut = tk.Button(self.endff, text="What happens now?", command = lambda: self.end_screen(SAD_ENDING))
-            self.endff.grid(column=1, row=0)
-            self.endff.flab.grid()
-            self.endff.fbut.grid()
+            self.check_end_frame = tk.Frame(self)
+            self.check_end_frame.final_label = tk.Message(self.check_end_frame,
+                                                          text="You are too sad to continue!! :( :( ")
+            self.check_end_frame.final_button = tk.Button(self.check_end_frame,
+                                                          text="What happens now?",
+                                                          command = lambda: self.end_screen(SAD_ENDING))
+            self.check_end_frame.grid(column=1, row=0)
+            self.check_end_frame.final_label.grid()
+            self.check_end_frame.final_button.grid()
         
         elif status == EndGameStatus.START_FINALS and len(self.enrolled_physics_classes) != 0:
             # Trigger the start of Finals
-            self.endff = tk.Frame(self)
-            self.endff.flab = tk.Message(self.endff,
+            self.check_end_frame = tk.Frame(self)
+            self.check_end_frame.final_label = tk.Message(self.check_end_frame,
                                          text="You have reached Finals week!! Remember, if you aren't miserable, "\
                                               "you aren't studying hard enough!!")
-            self.endff.fbut = tk.Button(self.endff,
+            self.check_end_frame.final_button = tk.Button(self.check_end_frame,
                                         text="To Finals!",
                                         command=lambda: self.do_final(0))
-            self.endff.grid(column=1, row=0)
-            self.endff.flab.grid()
-            self.endff.fbut.grid()
+            self.check_end_frame.grid(column=1, row=0)
+            self.check_end_frame.final_label.grid()
+            self.check_end_frame.final_button.grid()
 
         else:
             # If you enroll in no classes, call that no classes ending
