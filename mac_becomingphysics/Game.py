@@ -352,21 +352,21 @@ class Game(tk.Frame):
         # Make sure the player hasn't finished all possible lectures
         if selected_class.day < len(selected_class.lectures):
           
-            self.lab_frame.cp1 = Image.open(selected_class.lectures[selected_class.day]['image_location'])
+            self.lab_frame.class_image = Image.open(selected_class.lectures[selected_class.day]['image_location'])
             
             self.show_stat_changes(selected_class.happiness, selected_class.knowledge, 0)
             
-            ##Resize image but keep old aspect ratio
-            newwidth = int((self.lab_frame.cp1.width * 500)/self.lab_frame.cp1.height)  
-            self.lab_frame.cp1 = self.lab_frame.cp1.resize((newwidth, 500), Image.ANTIALIAS)
-            self.lab_frame.cp2 = ImageTk.PhotoImage(self.lab_frame.cp1) #do some bullshit
+            # Resize image but keep old aspect ratio
+            newwidth = int((self.lab_frame.class_image.width * 500)/self.lab_frame.class_image.height)  
+            self.lab_frame.class_image = self.lab_frame.class_image.resize((newwidth, 500), Image.ANTIALIAS)
+            self.lab_frame.class_frame = ImageTk.PhotoImage(self.lab_frame.class_image)
             
-            
-            self.lab_frame.cv = tk.Canvas(self.lab_frame, width=newwidth, height=500)
-            self.lab_frame.cv.create_image(0,0,anchor=tk.NW,image=self.lab_frame.cp2)
-            ##LOL First numbers are coordinates NOT SIZES!!! OMG 
-            #The default is anchor=tk.CENTER, meaning that the image is centered on the (x,y) position. 
-            self.lab_frame.cv.grid()
+            self.lab_frame.class_image_frame = tk.Canvas(self.lab_frame, width=newwidth, height=500)
+
+            # First numbers are coordinates, not sizes
+            # The default is anchor=tk.CENTER, meaning that the image is centered on the (x,y) position. 
+            self.lab_frame.class_image_frame.create_image(0,0,anchor=tk.NW, image=self.lab_frame.class_frame)
+            self.lab_frame.class_image_frame.grid()
             
             lecture_text = selected_class.lectures[selected_class.day]['lecture']
             self.lab_frame.msg = tk.Message(self.lab_frame, text=lecture_text, aspect=1000)
@@ -376,23 +376,32 @@ class Game(tk.Frame):
             # Player has attended all possible lectures for that particular class
             tk.Label(self.lab_frame, text = "Wheee you ran out of lectures").grid(row=0, column=0)
             class_index = -1
-            
+        
+        # Place "Done" button
         tk.Button(self.lab_frame, text="Done", command = lambda:self.after_class(class_index)).grid(row=2, column=0)
         
+        # Place everything in the frame
         self.lab_frame.grid(row=0, column=1, sticky=tk.NW)
     
     def go_to_class(self):
-        """ go to class
+        """ Display classes which player is enrolled in, and radio buttons for them to choose which class to attend
         """
+        # Clean up frame
         self.mainframe.grid_remove()
-        
+
+        # Place event frame
         self.event_frame = tk.Frame(self)
-        
+
+        # Create variable for the Radio buttons
         var = tk.IntVar()
-        for index, item in enumerate(self.enrolled_physics_classes):
-            self.event_frame.radio_button = tk.Radiobutton(self.event_frame, text = item.name,  variable = var, value = index)
+        for index, enrolled_physics_class in enumerate(self.enrolled_physics_classes):
+            self.event_frame.radio_button = tk.Radiobutton(self.event_frame, 
+                                                           text = enrolled_physics_class.name,
+                                                           variable = var,
+                                                           value = index)
             self.event_frame.radio_button.grid(row=1 + index)
-        
+
+        # Display button to attend class
         tk.Button(self.event_frame,
                   text="Go To This Class",
                   command = lambda:self.in_class(var.get())).grid(row=2 + len(self.enrolled_physics_classes),
@@ -404,9 +413,9 @@ class Game(tk.Frame):
         self.event_frame.grid(row=0, column=1)
     
     def after_lab(self, choice):
-        """ Funtion called after lab scenario
+        """ Funtion called after lab scenario completes
         """
-
+        # Clean up frame
         self.lab_frame.grid_remove()
 
         # Update player stats        
@@ -415,20 +424,28 @@ class Game(tk.Frame):
         self.research = self.research + choice.research
         self.day = self.day + 1
         
-        ##check Boundaries!
+        # check stat boundaries
         self.check_boundaries()
+
+        # Check for endgame conditions
         status = self.check_for_endgame()
-        if status != EndGameStatus.CONTINUE : 
+        if status != EndGameStatus.CONTINUE: 
             self.end_game(status)
         else:
             self.show_main_choices()
     
     def at_lab(self, choice):
+        """ Show stat changes and display lab choice text for lab scenario.
+
+        :param choice: the Choice which the player selected for a given LabScenario
         """
-        """
+        # Clean up frame
         self.event_frame.grid_remove()
+
+        # Set up lab frame
         self.lab_frame = tk.Frame(self)
-   
+
+        # Show changes in stats
         self.show_stat_changes(choice.happiness, choice.knowledge, choice.research)
    		
         tk.Message(self.lab_frame, text=choice.effect_text, aspect=1000).grid(row=0, column=0)
@@ -441,49 +458,59 @@ class Game(tk.Frame):
         """
         self.mainframe.grid_remove()
         
-        ls = self.joined_research_lab.generate_lab_scenario()
-        if ls.scenario is None: ##Ran out of scenarios!
+        # Generate a lab scenario 
+        lab_scenario = self.joined_research_lab.generate_lab_scenario()
+        if lab_scenario.scenario is None: # Ran out of scenarios!
             self.event_frame = tk.Frame(self)
             self.event_frame.grid(column=1)
             tk.Message(self.event_frame,
                       text = "You go to lab, but there is no work for you there. "\
                              "Maybe you should go to class instead?").grid()
-            tk.Button(self.event_frame, text = "Ok", command = self.show_main_choices).grid()
-        else : 
+            tk.Button(self.event_frame, text="Ok", command=self.show_main_choices).grid()
+        else:
+            # Display Lab scenario 
             self.event_frame = tk.Frame(self)
-            self.event_frame.labe = tk.Label(self.event_frame, text= "You went to Lab:")
-            self.event_frame.labf = tk.Message(self.event_frame, text = ls.scenario)
-            self.event_frame.butfr = tk.Frame(self.event_frame)
-            self.event_frame.butfr.choice1 = tk.Button(self.event_frame.butfr,
-                                              text = ls.choice1.choice_text,
-                                              command = lambda: self.at_lab(ls.choice1))
-            self.event_frame.butfr.choice2 = tk.Button(self.event_frame.butfr,
-                                              text = ls.choice2.choice_text,
-                                              command = lambda: self.at_lab(ls.choice2))
+            self.event_frame.lab_title = tk.Label(self.event_frame, text="You went to Lab:")
+            self.event_frame.lab_scenario_label = tk.Message(self.event_frame, text=lab_scenario.scenario)
+            self.event_frame.ls_frame = tk.Frame(self.event_frame)
+
+            # Display the two LabScenario Choices
+            self.event_frame.ls_frame.choice1 = tk.Button(self.event_frame.ls_frame,
+                                              text = lab_scenario.choice1.choice_text,
+                                              command = lambda: self.at_lab(lab_scenario.choice1))
+            self.event_frame.ls_frame.choice2 = tk.Button(self.event_frame.ls_frame,
+                                              text = lab_scenario.choice2.choice_text,
+                                              command = lambda: self.at_lab(lab_scenario.choice2))
         
-            self.event_frame.labe.grid(row=0, column = 0)
-            self.event_frame.labf.grid(row=1, column=0)
-            self.event_frame.butfr.grid(row=2, column=0)
+            self.event_frame.lab_title.grid(row=0, column = 0)
+            self.event_frame.lab_scenario_label.grid(row=1, column=0)
+            self.event_frame.ls_frame.grid(row=2, column=0)
         
-            self.event_frame.butfr.choice1.grid(row=0, column = 0)
-            self.event_frame.butfr.choice2.grid(row=0, column=1)
+            self.event_frame.ls_frame.choice1.grid(row=0, column = 0)
+            self.event_frame.ls_frame.choice2.grid(row=0, column=1)
         
             self.event_frame.grid(row=0, column=1)
     
-    def grade_final(self, vars,cnum):
-        """ grade the final
+    def grade_final(self, vars, class_index):
+        """ Grade a final for a given PhysicsClass. Update player stats.
+
+
         """
-        ###Display the correct answers
+        # Clean up frame
         self.endf.grid_remove()
-        pclass = self.enrolled_physics_classes[cnum]
-        
+
+        # get class from list of player's enrolled classes
+        physics_class = self.enrolled_physics_classes[class_index]
+
+
         self.endf2 = tk.Frame(self)
         
-        self.endf2.pclab = tk.Label(self.endf2, text=pclass.name + " Final Answers", font ="Arial 16")
+        self.endf2.pclab = tk.Label(self.endf2, text=physics_class.name + " Final Answers", font ="Arial 16")
         self.endf2.pclab.grid()
- 
+
+        # Display the correct answers 
         for i in range(0,3) :
-            finals_text = str(i+1) + ". " + pclass.final.questions[i].qtext
+            finals_text = str(i+1) + ". " + physics_class.final.questions[i].qtext
             self.endf2.q = tk.Message(self.endf2,
                                       text = finals_text,
                                       aspect = 1200,
@@ -498,7 +525,7 @@ class Game(tk.Frame):
                 oldvar = tk.IntVar()
                 oldvar = vars[i]
                 
-                radio_button_text = pclass.final.questions[i].answers[j]
+                radio_button_text = physics_class.final.questions[i].answers[j]
                 self.endf2.radio_button = tk.Radiobutton(self.endf2,
                                                text = radio_button_text,
                                                font = "Courier 12",
@@ -506,7 +533,7 @@ class Game(tk.Frame):
                                                variable = oldvar,
                                                value = j)
                 
-                if self.enrolled_physics_classes[cnum].final.questions[i].answer.value == j:
+                if physics_class.final.questions[i].answer.value == j:
                     ##green
                     self.endf2.radio_button.config(bg = "green")
                 else:
@@ -515,17 +542,17 @@ class Game(tk.Frame):
                 
                 self.endf2.radio_button.grid(sticky = tk.W)
                 
-        self.endf2.gradebut = tk.Button(self.endf2, text="Continue", command = lambda :self.do_final(cnum))
+        self.endf2.gradebut = tk.Button(self.endf2, text="Continue", command = lambda :self.do_final(class_index))
         self.endf2.gradebut.grid()
         self.endf2.grid(column=1, row=0)
         
         ##Make and store grade
         score = 0
         for i in range(0,3):
-            if self.enrolled_physics_classes[cnum].final.questions[i].answer.value == vars[i].get() :
+            if physics_class.final.questions[i].answer.value == vars[i].get() :
                 score = score + 1
-        self.enrolled_physics_classes[cnum].final_grade = score
-        cnum = cnum + 1
+        physics_class.final_grade = score
+        class_index = class_index + 1
     
     def determine_ending(self):
         """
