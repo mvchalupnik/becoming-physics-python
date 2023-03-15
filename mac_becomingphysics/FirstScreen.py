@@ -22,9 +22,9 @@ class FirstScreen(tk.Frame, tk.Tk):
         Game class
         """
         self.canvas.destroy()
-        self.lab1.destroy()
-        self.yesbut.destroy()
-        self.nobut.destroy()
+        self.first_label.destroy()
+        self.yes_button.destroy()
+        self.no_button.destroy()
 
         # Start the game
         Game(self)
@@ -34,7 +34,7 @@ class FirstScreen(tk.Frame, tk.Tk):
         """
 
         # Open the image
-        self.image = Image.open('100by100test.png')
+        self.image = Image.open('pics/100by100test.png')
         self.pimage = ImageTk.PhotoImage(self.image)
 
         # Make a canvas
@@ -45,10 +45,10 @@ class FirstScreen(tk.Frame, tk.Tk):
 
         # Place the canvas
         self.canvas.grid(row=0, column=1)
-        self.lab1 = tk.Label(self, text=INTRO_TEXT)
-        self.yesbut = tk.Button(self, text='Yes', command=self.start_game) #TODO
-        self.nobut = tk.Button(self, text='No', command=self.quit)
+        self.first_label = tk.Label(self, text=INTRO_TEXT)
+        self.yes_button = tk.Button(self, text='Yes', command=self.start_game)
+        self.no_button = tk.Button(self, text='No', command=self.quit)
             
-        self.lab1.grid(row=1, column=1)
-        self.yesbut.grid(row=3, column=0)
-        self.nobut.grid(row=3, column=3)
+        self.first_label.grid(row=1, column=1)
+        self.yes_button.grid(row=3, column=0)
+        self.no_button.grid(row=3, column=3)

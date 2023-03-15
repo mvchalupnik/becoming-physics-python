@@ -68,18 +68,18 @@ class Game(tk.Frame):
             self.portrait.knowledge_label.config(bg="red")
         
         self.portrait.research_label.config(text= "Research: "+ str(self.research) + " + " + str(delta_r))
-        if delta_r >=0:
+        if delta_r >= 0:
             self.portrait.research_label.config(bg="green")
         else:
             self.portrait.research_label.config(bg="red")
             
-        self.portrait.day_label.config(text= "Day: "+ str(self.day) + " + 1")    
+        self.portrait.day_label.config(text= "Day: "+ str(self.day) + " + 1")
     
     def update_portrait(self):    
         """ Update portrait and display stats. 
         """
         # Open character portrait image
-        self.portrait.image = Image.open('50by50test.png')
+        self.portrait.image = Image.open('pics/50by50test.png')
         self.portrait.pimage = ImageTk.PhotoImage(self.portrait.image)
 
         # Place the image on the canvas
