@@ -1,4 +1,4 @@
-from physics_elements import Final, Question, PhysicsClass, Lab, Ending, LabType
+from physics_elements import Final, Question, PhysicsClass, Lab, Ending, LabType, LabScenario, Choice
 from enum import Enum
 
 """
@@ -204,3 +204,295 @@ EQUATION_ENDING = Ending("Ending 6 of 6: Success!",
                         'pics/becomingphys.png',
                         "You did it!! You became a physics of yourself! This is you. You became physics! "\
                         "See how happy you are! YOU WIN!")
+
+
+lab_scenarios = [
+    LabScenario(
+        scenario="You didn't get enough sleep the night before. How to try to stay awake? Should you list all "
+        "of the Real Housewives of Beverly Hills in your head that you can remember, or list all of "
+        "the scientists in your head that you can think of?",
+        choice1=Choice(
+            choice_text="Real Housewives",
+            happiness=20,
+            knowledge=0,
+            research=20,
+            effect_text="Lisa Rinna...Lisa Vanderpump... Eileen Davidson... Kyle Richards... Kim Richards... "
+            "You stay awake",
+        ),
+        choice2=Choice(
+            choice_text="Scientists",
+            happiness=-5,
+            knowledge=0,
+            research=5,
+            effect_text="You fall asleep",
+        ),
+        lab_category=LabType.BOTH,
+        has_been_displayed=False,
+        sibling=1,
+    ),
+    LabScenario(
+        scenario="You didn't get enough sleep the night before. How to try to stay awake? Should you list all of "
+        "the Real Housewives of Beverly Hills in your head that you can remember, or list all of the "
+        "scientists in your head that you can think of?",
+        choice1=Choice(
+            choice_text="Real Housewives",
+            happiness=-5,
+            knowledge=0,
+            research=5,
+            effect_text="You fall asleep",
+        ),
+        choice2=Choice(
+            choice_text="Scientists",
+            happiness=5,
+            knowledge=0,
+            research=20,
+            effect_text="You stay awake",
+        ),
+        lab_category=LabType.BOTH,
+        has_been_displayed=False,
+        sibling=0,
+    ),
+    LabScenario(
+        scenario="You are cold because you work in the basement of a basement. You have an extra sweater "
+        "and a winter coat you can but on. But, thinking about it, maybe you should just tough it out?",
+        choice1=Choice(
+            choice_text="Wear extra sweater and coat",
+            happiness=20,
+            knowledge=10,
+            research=10,
+            effect_text="Good choice. You are much warmer now and are able to think more clearly.",
+        ),
+        choice2=Choice(
+            choice_text="Tough it out",
+            happiness=-60,
+            knowledge=-10,
+            research=-20,
+            effect_text="You decide to not put on your coat or extra sweater and "
+            "just tough it out. This was not a good idea. Two hours later, you reach the stage of "
+            "hypothermia where cold feels warm, and you begin paradoxical undressing. This is not good "
+            "to do in a place of research. You lose a lot of research points and happiness.",
+        ),
+        lab_category=LabType.BOTH,
+        has_been_displayed=False,
+        sibling=-1,
+    ),
+    LabScenario(
+        scenario="How hard to work today?",
+        choice1=Choice(
+            choice_text="Really hard!",
+            happiness=10,
+            knowledge=10,
+            research=10,
+            effect_text="Good!",
+        ),
+        choice2=Choice(
+            choice_text="Really really hard!",
+            happiness=-20,
+            knowledge=-20,
+            research=0,
+            effect_text="You pass out from exhaustion, and accidentally hit a lever releasing low level radiation "
+            "into the lab.",
+        ),
+        lab_category=LabType.BOTH,
+        has_been_displayed=False,
+        sibling=4,
+    ),
+    LabScenario(
+        scenario="How hard to work today?",
+        choice1=Choice(
+            choice_text="Really hard!",
+            happiness=10,
+            knowledge=5,
+            research=15,
+            effect_text="Good but could be better...",
+        ),
+        choice2=Choice(
+            choice_text="Really really hard!",
+            happiness=20,
+            knowledge=40,
+            research=60,
+            effect_text="Amazing!!",
+        ),
+        lab_category=LabType.BOTH,
+        has_been_displayed=False,
+        sibling=3,
+    ),
+    LabScenario(
+        scenario="Something is flashing red. Do you press the button next to it? But wait... this is an important "
+        "experiment, and it isn't your experiment. You could mess it up. Maybe you should leave it alone?",
+        choice1=Choice(
+            choice_text="Press button",
+            happiness=10,
+            knowledge=10,
+            research=20,
+            effect_text="The experiment is ruined but you save the lab from burning down! Good call!",
+        ),
+        choice2=Choice(
+            choice_text="Do nothing",
+            happiness=-40,
+            knowledge=-10,
+            research=-20,
+            effect_text="The lab burns down! :(",
+        ),
+        lab_category=LabType.BOTH,
+        has_been_displayed=False,
+        sibling=6,
+    ),
+    LabScenario(
+        scenario="Something is flashing red. Do you press the button next to it? But wait... this is an important "
+        "experiment, and it isn't your experiment. You could mess it up. Maybe you should leave it alone?",
+        choice1=Choice(
+            choice_text="Press button",
+            happiness=-20,
+            knowledge=-10,
+            research=10,
+            effect_text="Experiment is ruined! Your PI is super mad at you. :(",
+        ),
+        choice2=Choice(
+            choice_text="Do nothing",
+            happiness=20,
+            knowledge=30,
+            research=60,
+            effect_text="Experiment is fine, good call!",
+        ),
+        lab_category=LabType.BOTH,
+        has_been_displayed=False,
+        sibling=5,
+    ),
+    LabScenario(
+        scenario="Your entire lab has been trying to discover the Bigs Hoson particle for years. You think you "
+        "see the signs of one in today's collider data. Do you immediately call the press to tell them?",
+        choice1=Choice(
+            choice_text="Yes!",
+            happiness=50,
+            knowledge=10,
+            research=40,
+            effect_text="You call the press and tell them. It turns out the signs were real, and you did discover "
+            "the Bigs Hoson! You become a physics celebrity and go on many talk shows.",
+        ),
+        choice2=Choice(
+            choice_text="No!",
+            happiness=-10,
+            knowledge=0,
+            research=0,
+            effect_text="You decide to wait and talk to your PI first. But in the two minutes "
+            "you wait, some other lab calls the press and announces they have discovered the Bigs Hoson. :( ",
+        ),
+        lab_category=LabType.SMALL_STUFF,
+        has_been_displayed=False,
+        sibling=8,
+    ),
+    LabScenario(
+        scenario="Your entire lab has been trying to discover the Bigs Hoson particle for years. "
+        "You think you see the signs of one in today's collider data. Do you immediately "
+        "call the press to tell them?",
+        choice1=Choice(
+            choice_text="Yes!",
+            happiness=-50,
+            knowledge=-10,
+            research=-10,
+            effect_text="You call the press and tell them. It turns out the signs were false. You are "
+            "laughed at by all of physics.",
+        ),
+        choice2=Choice(
+            choice_text="No!",
+            happiness=20,
+            knowledge=0,
+            research=20,
+            effect_text="You decide to wait and talk to your PI first. This is the normal "
+            "and reasonable thing to do. Turns out the signs were false. Good thing you didn't "
+            "go to the press. ",
+        ),
+        lab_category=LabType.SMALL_STUFF,
+        has_been_displayed=False,
+        sibling=7,
+    ),
+    LabScenario(
+        scenario="You were setting up some optics but you got a mirror dirty. "
+        "Should you clean it with methanol or acetone?",
+        choice1=Choice(
+            choice_text="Methanol",
+            happiness=0,
+            knowledge=0,
+            research=5,
+            effect_text="This mirror had extra dirt on it and the methanol isn't strong enough... "
+            "you should have used acetone.",
+        ),
+        choice2=Choice(
+            choice_text="Acetone",
+            happiness=20,
+            knowledge=0,
+            research=15,
+            effect_text="Good call! You are able to clean the mirror which had a lot of dirt on it.",
+        ),
+        lab_category=LabType.SMALL_STUFF,
+        has_been_displayed=False,
+        sibling=10,
+    ),
+    LabScenario(
+        scenario="You were setting up some optics but you got a mirror dirty. "
+        "Should you clean it with methanol or acetone?",
+        choice1=Choice(
+            choice_text="Methanol",
+            happiness=20,
+            knowledge=0,
+            research=15,
+            effect_text="Good call! This mirror didn't have that much dirt on it, so acetone would have been overkill. "
+            "You successfully clean the mirror.",
+        ),
+        choice2=Choice(
+            choice_text="Acetone",
+            happiness=0,
+            knowledge=0,
+            research=5,
+            effect_text="Oh no! After 20 minutes of cleaning, you end up making the mirror dirtier than it initially was.",
+        ),
+        lab_category=LabType.SMALL_STUFF,
+        has_been_displayed=False,
+        sibling=9,
+    ),
+    LabScenario(
+        scenario="You are looking through your telescope and you see an asteroid coming to hit Earth. "
+        "The asteroid is the size of the moon. Earth is doomed. What should you do?",
+        choice1=Choice(
+            choice_text="Tell your PI",
+            happiness=-100,
+            knowledge=-100,
+            research=-100,
+            effect_text="It doesn't really matter, does it? The entire planet is doomed.",
+        ),
+        choice2=Choice(
+            choice_text="Go into the woods and live as a hermit for your remaining days",
+            happiness=-100,
+            knowledge=-100,
+            research=-100,
+            effect_text="It doesn't really matter, does it? The entire planet is doomed.",
+        ),
+        lab_category=LabType.BIG_STUFF,
+        has_been_displayed=False,
+        sibling=-1,
+    ),
+    LabScenario(
+        scenario="The distance between the sun and the Earth is 93,000,000 miles. The sun has a diameter of about "
+        "860,000 miles. The Earth has a radius of about 8,000 miles. You are 5 feet tall. There are 5280 "
+        "feet in a mile. You are 0.001 miles tall. You are so tiny. A grain of sand is 0.003 feet which is "
+        "0.0000006 miles in diameter.",
+        choice1=Choice(
+            choice_text="Wow that's disturbing",
+            happiness=-15,
+            knowledge=0,
+            research=10,
+            effect_text="Maybe you shouldn't have decided to study Big Stuff",
+        ),
+        choice2=Choice(
+            choice_text="That makes me uncomfortable",
+            happiness=-15,
+            knowledge=0,
+            research=10,
+            effect_text="Maybe you shouldn't have decided to study Big Stuff",
+        ),
+        lab_category=LabType.BIG_STUFF,
+        has_been_displayed=False,
+        sibling=-1,
+    ),
+]

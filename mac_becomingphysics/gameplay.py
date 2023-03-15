@@ -5,7 +5,7 @@ from enum import Enum
 from constants import IMG_HEIGHT, IMG_WIDTH, SMALL_IMG_HEIGHT, SMALL_IMG_WIDTH, DAYS_IN_QUARTER
 from game_text import INTRO_TEXT, REGISTER_TEXT, JOIN_TEXT, CHOOSE_CLASS_TEXT, ALL_CLASSES, ALL_LABS,\
                       SAD_ENDING, NO_CLASSES_ENDING, BAD_STUDENT_ENDING, SCOPE_ENDING,\
-                      GRAD_SCHOOL_ENDING, EQUATION_ENDING
+                      GRAD_SCHOOL_ENDING, EQUATION_ENDING, lab_scenarios
 from physics_elements import Final, Question, PhysicsClass, Choice, LabScenario, Lab, Ending, LabType
 
 """
@@ -461,7 +461,7 @@ class Game(tk.Frame):
         self.mainframe.grid_remove()
         
         # Generate a lab scenario 
-        lab_scenario = self.joined_research_lab.generate_lab_scenario()
+        lab_scenario = self.joined_research_lab.generate_lab_scenario(lab_scenarios)
         if lab_scenario is None: # Ran out of scenarios!
             self.lab_frame = tk.Frame(self)
             self.lab_frame.grid(column=1)
