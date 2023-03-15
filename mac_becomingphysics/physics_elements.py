@@ -1,34 +1,34 @@
 import random as random
 from enum import Enum
+from typing import Dict, List
 
 """ 
 physics_elements.py
 Contains classes used in Becoming Physics
 """
-
 class Question:
     """ A Question is a multiple choice question given on a final for a class at the end of the term.
 
     :param question_text: The text of the question
     :param answers: The four possible multiple choice answers
-    :param answer: The correct answer
+    :param correct_answer: The correct answer
     """
-    def __init__ (self, question_text, a, b, c, d, correct_answer):
-        self.question_text = question_text #string
-        self.answers = [a, b, c, d] # list of strings
-        self.correct_answer = correct_answer #char
+    def __init__ (self, question_text: str, a: str, b: str, c: str, d: str, correct_answer: str):
+        self.question_text = question_text
+        self.answers = [a, b, c, d]
+        self.correct_answer = correct_answer
 
 
 class Final:
     """ Final contains a PhysicsClass, and a list of three Questions for the associated Final
 
-    :param physics_class: A PhysicsClass which the Final is associated with
+    :param physics_class: A string with the name of the class which the Final is associated with
     :param questions: A list of three Questions for the final
 
     """
-    def __init__ (self, physics_class, questions):
-        self.physics_class = physics_class #string ## TODO IS THIS A STRING??
-        self.questions = questions #List of Questions
+    def __init__ (self, physics_class: str, questions: List[Question]):
+        self.physics_class = physics_class
+        self.questions = questions
 
 
 class PhysicsClass:
@@ -37,14 +37,14 @@ class PhysicsClass:
     a final exam for each PhysicsClass they have enrolled in.
 
     :param name: The name of the class
-    :param hap: The amount of happiness the class gives you per day attended
-    :param kno: The amount of knowledge the class gives you per day attended
+    :param happiness: The amount of happiness the class gives you per day attended
+    :param knowledge: The amount of knowledge the class gives you per day attended
     :param day: How many days of the class you have attended
-    :param lecs: The lectures associated with the class
+    :param lectures: The lectures associated with the class
     :param final: The final exam associated with the class
     """
     
-    def __init__ (self, name, happiness, knowledge, day, lectures, final):
+    def __init__ (self, name: str, happiness: int, knowledge: int, day: int, lectures: List[Dict], final: Final):
         # Initialize final grade as 0, and update this after finals
         self.final_grade = 0
 
@@ -52,7 +52,7 @@ class PhysicsClass:
         self.happiness = happiness
         self.knowledge = knowledge
 
-        # Start on day 0
+        # Start on day 0 of the class
         self.day = 0
         self.lectures = lectures
         self.final = final
@@ -68,28 +68,32 @@ class Choice:
     :param research: Int of the amount research will change due to this choice
     :param effect_text: string containing text describing the after effect of the Choice
     """
-    def __init__ (self, choice_text, happiness, knowledge, research, effect_text):
-        self.choice_text = choice_text #string
-        self.happiness = happiness #int
-        self.knowledge = knowledge #int
-        self.research = research #int
-        self.effect_text = effect_text #string (?)
+    def __init__ (self, choice_text: str, happiness: int, knowledge: int, research: int, effect_text: str):
+        self.choice_text = choice_text
+        self.happiness = happiness
+        self.knowledge = knowledge
+        self.research = research
+        self.effect_text = effect_text
 
 
 class LabScenario:
     """ LabScenario describes a scenario that happens to you while you are working in lab.
         LabScenarios have associated Choices and the player's choice will affect player stats.
 
+    :param scenario: A string containing text describing what happens in the scenario
+    :param choice1: A Choice giving one possible choice to pick
+    :param choice2: A Choice giving the second possible choice to pick
+    :param lab_category: An Enum denoting which Labs will come across that scenario
+    :param has_been_displayed: A bool which is set to True after the LabScenario has been shown
+    :param sibling: An int giving the index in the LabScenarios list which contains the same LabScenario, but
+                    with different outcomes. Set to -1 if there is no sibling.
     """
     
-    def __init__ (self, scenario, choice1, choice2, lab_category):
-        # initialize whether the LabScenario has been displayed
-        self.has_been_displayed = 0
+    def __init__ (self, scenario: str, choice1: Choice, choice2: Choice, lab_category: Enum,
+                  has_been_displayed: bool, sibling: int):
 
-        # A sibling is the same LabScenario but with different outcomes
-        # If there is a sibling, this number will be changed to the index of the sibling
-        # TODO just point to the scenario??
-        self.sibling = -1
+        self.has_been_displayed = has_been_displayed
+        self.sibling = sibling
 
         self.scenario = scenario
         self.choice1 = choice1
@@ -107,7 +111,7 @@ class LabType(Enum):
 
 
 ##(happiness, knowledge, research)
-LAB_SCENARIOS = [LabScenario("You didn't get enough sleep the night before. How to try to stay awake? Should you list all "\
+lab_scenarios = [LabScenario("You didn't get enough sleep the night before. How to try to stay awake? Should you list all "\
                    "of the Real Housewives of Beverly Hills in your head that you can remember, or list all of "\
                    "the scientists in your head that you can think of?", Choice("Real Housewives", 20,0,20,
                     "Lisa Rinna...Lisa Vanderpump... Eileen Davidson... Kyle Richards... Kim Richards... "\
@@ -191,13 +195,13 @@ class Lab:
     to affect happiness, research, and knowledge stats.
 
     :param name: The name of the Lab as a string, to be displayed
-    :param lab_type: The Enum type of the lab
+    :param lab_category: The Enum type of the lab
 
     """
 
     # TODO I don't like that this is located here??
     ###set up siblings
-    LAB_SCENARIOS[0].sibling = 1
+    lab_scenarios[0].sibling = 1
     LAB_SCENARIOS[1].sibling = 0
     LAB_SCENARIOS[3].sibling = 4
     LAB_SCENARIOS[4].sibling = 3 ## a better way to do this is to just check if titles match... TODO
@@ -208,36 +212,40 @@ class Lab:
     LAB_SCENARIOS[9].sibling = 10
     LAB_SCENARIOS[10].sibling = 9
     
-    def __init__ (self, name, lab_type):
+    def __init__ (self, name: str, lab_category: Enum):
         self.name = name
-        self.lab_type = lab_type #TODO
+        self.lab_category = lab_category
     
     def generate_lab_scenario(self):
+        """ Generate a LabScenario based on the LabType. Do not repeat LabScenarios.
         """
-        """
+
+        # Create list of indices of undisplayed LabScenarios
+        undisplayed_lab_scenarios = []
+        for lab_scenario in lab_scenarios #NOT A CONSTANT TODO
 
         # Randomly generate a LabScenario associated with the LabType
         trys = 100
         for x in range (0, trys): # TODO improve this??
             # Gives me my random index
-            rindex = int(random.random()*len(LAB_SCENARIOS))
+            rindex = int(random.random()*len(lab_scenarios))
 
             # Check to make sure that LabScenario hasn't already been displayed
-            if (not LAB_SCENARIOS[rindex].has_been_displayed) and \
-                (LAB_SCENARIOS[rindex].lab_category == LabType.BOTH or\
-                LAB_SCENARIOS[rindex].lab_category == self.lab_type):
+            if (not lab_scenarios[rindex].has_been_displayed) and \
+                (lab_scenarios[rindex].lab_category == LabType.BOTH or\
+                lab_scenarios[rindex].lab_category == self.lab_category):
 
                 # Change has_been_displayed field to True
-                LAB_SCENARIOS[rindex].has_been_displayed = True
+                lab_scenarios[rindex].has_been_displayed = True
                 
                 # Check for a sibling, and if a sibling exists, change has_been_displayed to True
                 # for the sibling also
-                sindex = LAB_SCENARIOS[rindex].sibling
+                sindex = lab_scenarios[rindex].sibling
                 if sindex >=0:
-                    LAB_SCENARIOS[sindex].has_been_displayed = True
-                return LAB_SCENARIOS[rindex]
+                    lab_scenarios[sindex].has_been_displayed = True
+                return lab_scenarios[rindex]
         else:
-            # Ran out of LAB_SCENARIOs
+            # Ran out of lab_scenarios
             return None
 
 
@@ -249,7 +257,7 @@ class Ending:
     :param text: String containing the ending text
     """
 
-    def __init__ (self, ending_title, image, ending_text):
+    def __init__ (self, ending_title: str, image: str, ending_text: str):
         self.ending_title = ending_title
         self.image = image
         self.ending_text = ending_text
