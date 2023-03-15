@@ -578,73 +578,81 @@ class Game(tk.Frame):
             # Bad ending
             return BAD_STUDENT_ENDING
     
-    def end_screen(self, end):
-        """ Display ending screen based on end
+    def end_screen(self, ending):
+        """ Display ending screen based on ending passed
 
-        
+        :param ending: the Ending to display to the player
         """
+        # Create ending screen frame
+        self.end_frame = tk.Frame(self)
+        self.end_frame.end_label = tk.Label(self.end_frame, text=ending.ending_title, font=" 14")
+        
+        # Open ending image
+        self.end_frame.image = Image.open(ending.image)
 
-        self.endd = tk.Frame(self)
-        self.endd.endlab = tk.Label(self.endd, text=end.ending_title, font=" 14")
+        # Resize image but keep old aspect ratio
+        new_width = int((self.end_frame.image.width * 500)/self.end_frame.image.height)  
+        self.end_frame.image = self.end_frame.image.resize((new_width, 500), Image.ANTIALIAS)
+        self.end_frame.image = ImageTk.PhotoImage(self.end_frame.image)
         
-        self.endd.image = Image.open(end.image)
-
-        ##Resize image but keep old aspect ratio
-        newwidth = int((self.endd.image.width * 500)/self.endd.image.height)  
-        self.endd.image = self.endd.image.resize((newwidth, 500), Image.ANTIALIAS)
-        self.endd.image = ImageTk.PhotoImage(self.endd.image) #do some bullshit
-            
-        self.endd.endcanv = tk.Canvas(self.endd, width = newwidth, height=500)
-        self.endd.endcanv.create_image(0,0, anchor=tk.NW, image=self.endd.image)
+        # Create canvas for the image 
+        self.end_frame.end_canvas = tk.Canvas(self.end_frame, width = new_width, height=500)
+        self.end_frame.end_canvas.create_image(0,0, anchor=tk.NW, image=self.end_frame.image)
         
-        self.endd.endmsg = tk.Message(self.endd, text = end.ending_text, aspect = 1200)
-        self.endd.quitbut = tk.Button(self.endd, text = "Quit", command = self.quit)
+        # Display ending message
+        self.end_frame.end_message = tk.Message(self.end_frame, text = ending.ending_text, aspect = 1200)
+        self.end_frame.quit_button = tk.Button(self.end_frame, text = "Quit", command = self.quit)
         
-        self.endd.endlab.grid()
-        self.endd.endcanv.grid()
-        self.endd.endmsg.grid()
-        self.endd.quitbut.grid()
-        self.endd.grid(column=1, row = 0)
+        self.end_frame.end_label.grid()
+        self.end_frame.end_canvas.grid()
+        self.end_frame.end_message.grid()
+        self.end_frame.quit_button.grid()
+        self.end_frame.grid(column=1, row = 0)
     
-    def get_letter_grade(self, tg):
-        # Find GPA and letter grade from the 3 question quiz
-        tg = float(tg) * 4./3.
+    def get_letter_grade(self, score):
+        """ Calculate GPA and letter grade for a given class from the three question quiz
 
-        if 3.7 < tg <= 4.0 :
+        :score: the player's score on the three question quiz
+        """
+        score = float(score) * 4./3.
+
+        if 3.7 < score <= 4.0 :
             return "A"
-        if 3.3 < tg <= 3.7 :
+        if 3.3 < score <= 3.7 :
             return "A-"
-        if 3.0 < tg <= 3.3 :
+        if 3.0 < score <= 3.3 :
             return "B+"
-        if 2.7 < tg <= 3.0 :
+        if 2.7 < score <= 3.0 :
             return "B"
-        if 2.3 < tg <= 2.7 :
+        if 2.3 < score <= 2.7 :
             return "B-"
-        if 2.0 < tg <= 2.3 :
+        if 2.0 < score <= 2.3 :
             return "C+"
-        if 1.7 < tg <= 2.0 :
+        if 1.7 < score <= 2.0 :
             return "C"
-        if 1.3 < tg <= 1.7 :
+        if 1.3 < score <= 1.7 :
             return "C-"
-        if 1 < tg <= 1.3 :
+        if 1 < score <= 1.3 :
             return "D+"
-        if 0.5 < tg <= 1 :
+        if 0.5 < score <= 1 :
             return "D"
         else:
             return "F"
             
-    def adjust_happiness_from_gpa(self, tg) :
-        """ Adjust happiness based on GPA
+    def adjust_happiness_from_gpa(self, gpa) :
+        """ Adjust player happiness based on GPA
+
+        :param gpa: The player's GPA
         """
-        if 3.5 < tg <= 4.0 :
+        if 3.5 < gpa <= 4.0 :
             self.happiness = self.happiness + 100
-        elif 3.0 < tg <= 3.5 :
+        elif 3.0 < gpa <= 3.5 :
             self.happiness = self.happiness + 30
-        elif 2.5 < tg <= 3.0 :
+        elif 2.5 < gpa <= 3.0 :
             self.happiness = self.happiness + 10
-        elif 2.0 < tg <= 2.5 :
+        elif 2.0 < gpa <= 2.5 :
             self.happiness = self.happiness - 10
-        elif 1.0 < tg <= 2.0 :
+        elif 1.0 < gpa <= 2.0 :
             self.happiness = self.happiness - 30
         else:
             self.happiness = self.happiness - 60
@@ -653,13 +661,15 @@ class Game(tk.Frame):
         self.check_boundaries()
     
     def trigger_end_screen(self, end):
-        """
+        """ Trigger the end screen
         """
         self.finals_frame.grid_remove()
         self.end_screen(end)
         
     def do_final(self, cnum):
-        """
+        """ Do a final 
+
+        
         """
         self.endff.grid_remove()
         if cnum > 0 :
@@ -720,7 +730,7 @@ class Game(tk.Frame):
         self.finals_frame.grid(column=1, row=0)
     
     def end_game(self, status):
-        """ End the game, with the ending determined by the ending status Enum provided.
+        """ Either end the game, or trigger finals, with the ending determined by the ending status Enum provided.
         """
         self.check_boundaries()
         if status == EndGameStatus.NEGATIVE_HAPPINESS:
