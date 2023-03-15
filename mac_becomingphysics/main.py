@@ -1,5 +1,6 @@
 import tkinter as tk
-from FirstScreen import FirstScreen
+from gameplay import FirstScreen
+
 
 def main():
     """ main function for running Becoming Physics game

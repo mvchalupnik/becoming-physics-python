@@ -1,13 +1,10 @@
-import tkinter as tk
-from PIL import Image, ImageTk
-import constants as v
-from PhysicsClass import *
-from Lab import *
-from LabScenario import *
-from Final import *
-from Question import *
-from Ending import *
+from physics_elements import Final, Question, PhysicsClass, Lab, Ending, LabType
+from enum import Enum
 
+"""
+game_text.py
+Contains text and some instantiated classes used in the game play of Becoming Physics
+"""
 
 class TestAnswer(Enum):
     A = 0
@@ -84,7 +81,7 @@ OCHECM_LECTURES = [{'lecture': "Here are some reactions. These reactions have me
                    'image_location': 'pics/couplingconstants.png'},
                    {'lecture': "Here are some PKAs to memorize.", 'image_location': 'pics/pkas.png'}]
 
-##FINALS!!
+# Finals
 COOL_FINAL = Final("Cool Physics", 
             [Question("A photon checks into a hotel. The bellhop asks, 'Can I help you with your luggage?'"\
                     "What does the photon say?",
@@ -151,7 +148,7 @@ OCHEM_FINAL = Final("Organic Chemistry",
                 "D. carboxylic acid, phenol, diketone, hydrogen on a carbon connected to two nitriles ", TestAnswer.C)])
 
 # Create classes and put them into a class list
-ALL_CLASSES = [PhysicsClass("Cool Physics", 15, 15, 0, 
+ALL_CLASSES = [PhysicsClass("Cool Physics", 15, 15, 0, #TODO add parameter names
             COOL_PHYSICS_LECTURES, COOL_FINAL), 
             PhysicsClass("Boring Physics", -15, 5, 0, BORING_PHYSICS_LECTURES, BORING_FINAL), 
             PhysicsClass("Fake Physics", -5, 5, 0, FAKE_PHYSICS_LECTURES, FAKE_FINAL),
@@ -159,18 +156,13 @@ ALL_CLASSES = [PhysicsClass("Cool Physics", 15, 15, 0,
             PhysicsClass("Organic Chemistry",-15,-5, 0, OCHECM_LECTURES, OCHEM_FINAL)]
 
 
-##LAB STUFF
+### Labs
 ALL_LABS = [Lab("Big Stuff", LabType.BIG_STUFF), 
             Lab("Medium-Sized Stuff", LabType.NONE),
             Lab("Small Stuff", LabType.SMALL_STUFF)]
 
 
-
-
-
-###Endings
-#TODO get rid of weird inconsistent camel case
-
+### Endings
 # Ending where happiness drops to 0
 SAD_ENDING = Ending("Ending 1 of 6: Sad Hermit",
                     'pics/hermit.png',
