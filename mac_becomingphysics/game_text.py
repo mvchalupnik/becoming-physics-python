@@ -31,51 +31,58 @@ JOIN_TEXT = "What kind of lab do you want to join? Do you want to study Big Stuf
 CHOOSE_CLASS_TEXT = "Which class do you want to go to?"
 
 
-##TODO lecture words #TODO change to dicts??
-COOL_PHYSICS_LECTURES = [["Today we're going to DERIVE Snell's Law from electrodynamics! We will only get halfway "\
-                         "through the derivation today.", 'pics/snelllaw1.png'],
-                        ["Today we finish our derivation of Snell's Law! As an added bonus, we get the Law "\
-                         "of Reflection also. Yay physics!!!!!!", 'pics/snellpart22.png'],
-                        ["What is the electric potential of a dipole? Let's figure it out from the defition "\
+# Physics Lectures
+COOL_PHYSICS_LECTURES = [{'lecture': "Today we're going to DERIVE Snell's Law from electrodynamics! "\
+                                    "We will only get halfway through the derivation today.", 
+                         'image_location':'pics/snelllaw1.png'},
+                        {'lecture': "Today we finish our derivation of Snell's Law! As an added bonus, we get the Law "\
+                         "of Reflection also. Yay physics!!!!!!", 'image_location': 'pics/snellpart22.png'},
+                        {'lecture': "What is the electric potential of a dipole? Let's figure it out from the defition "\
                          "of electric potential, binomial expansions, and law of cosines! Yay!!!!!",
-                         'pics/griffithsdipole.png'], 
-                         ["What is the energy stored in an electric field? We can figure it out through logic "\
-                         "and math!!! Yay physics!!!!", 'pics/electroenergy.png']]
+                         'image_location': 'pics/griffithsdipole.png'}, 
+                         {'lecture': "What is the energy stored in an electric field? We can figure it out through logic "\
+                         "and math!!! Yay physics!!!!", 'image_location': 'pics/electroenergy.png'}]
 
-BORING_PHYSICS_LECTURES = [["Here is the law of reflection. Nobody knows where it comes from. Here is how you "\
-                            "solve problems involving the law of reflection.", 'pics/reflectionlawboring.png'],
-                          ["Here is Snell's Law. It is an experimental law. It cannot be derived. Here is how "\
-                          "you solve problems involving Snell's Law.", 'pics/boringsnelllaw.png'],
-                          ["What is the electric potential of a dipole? Here is the equation. You can "\
+BORING_PHYSICS_LECTURES = [{'lecture': "Here is the law of reflection. Nobody knows where it comes from. Here is how you "\
+                            "solve problems involving the law of reflection.", 
+                            'image_location': 'pics/reflectionlawboring.png'},
+                          {'lecture': "Here is Snell's Law. It is an experimental law. It cannot be derived. Here is how "\
+                          "you solve problems involving Snell's Law.",
+                          'image_location': 'pics/boringsnelllaw.png'},
+                          {'lecture': "What is the electric potential of a dipole? Here is the equation. You can "\
                           "memorize the equation and use it to put numbers in and get numbers out. ",
-                          'pics/dipoleboring.png'],
-                          ["What is the energy stored in an electric field? It is this equation. "\
+                          'image_location': 'pics/dipoleboring.png'},
+                          {'lecture': "What is the energy stored in an electric field? It is this equation. "\
                           "You can put in numbers for E and e0 and 2 and do math on the numbers and get "\
                           "another number and that number is a number and you can put that number into "\
                           "another number and then it will be a number with a number.....",
-                          'pics/workenergyboring.png']]
+                          'image_location': 'pics/workenergyboring.png'}]
 
-FAKE_PHYSICS_LECTURES = [["Today we're going to learn about magenetism. Magnetism was discovered by the "\
+FAKE_PHYSICS_LECTURES = [{'lecture': "Today we're going to learn about magenetism. Magnetism was discovered by the "\
                           "great scientist Rene Descartes. His theories led to the development of Maxwell's "\
-                          "equations.",'pics/bigdescartes2.png'],
-                         ["Today we're going to learn about Quantum Physics.", 'pics/sciencereligion2.png'],
-                         ["Today we're going to learn about how mass and electromagnetism are related.",
-                         'pics/yourlegalaction.png']]
+                          "equations.", 'image_location': 'pics/bigdescartes2.png'},
+                         {'lecture': "Today we're going to learn about Quantum Physics.",
+                         'image_location': 'pics/sciencereligion2.png'},
+                         {'lecture': "Today we're going to learn about how mass and electromagnetism are related.",
+                         'image_location': 'pics/yourlegalaction.png'}]
 
-MATH_PHYSICS_LECTURES = [[":-/ ",'pics/sadimaginary.png'],
-                         [":-(", 'pics/saddiffeqmodified.png'],
-                         [":,-(", 'pics/saderff.png'],
-                         [":,,,,,,,-(", 'pics/sadwahhmath.png']]
+MATH_PHYSICS_LECTURES = [{'lecture': ":-/ ", 'image_location': 'pics/sadimaginary.png'},
+                         {'lecture': ":-(", 'image_location': 'pics/saddiffeqmodified.png'},
+                         {'lecture': ":,-(", 'image_location': 'pics/saderff.png'},
+                         {'lecture': ":,,,,,,,-(", 'image_location': 'pics/sadwahhmath.png'}]
 
-OCHECM_LECTURES = [["Here are some reactions. These reactions have mechanisms that are part logical "\
+OCHECM_LECTURES = [{'lecture': "Here are some reactions. These reactions have mechanisms that are part logical "\
                    "and part arbitrary. You will probably need to memorize the reagents. But that's ok, "\
-                   "it's not like there are whole other classes of reactions", 'pics/alkynestuffs2.png'],
-                   ["Lol jk there actually are many other classes of reactions. Here are some with alkynes. "\
-                   "(Don't forget alcohols and aldehydes and esters and ethers and...)",'pics/alkenestuffs2.png'],
-                   ["NMR can be used to identify chemicals. We're going to memorize the positions of NMR peaks. ",
-                   'pics/nmrstuffs2.png'],
-                   ["Here are some more arbitrary things to memorize.", 'pics/couplingconstants.png'],
-                   ["Here are some PKAs to memorize.", 'pics/pkas.png']]
+                   "it's not like there are whole other classes of reactions", 
+                   'image_location': 'pics/alkynestuffs2.png'},
+                   {'lecture': "Lol jk there actually are many other classes of reactions. Here are some with alkynes. "\
+                   "(Don't forget alcohols and aldehydes and esters and ethers and...)",
+                   'image_location': 'pics/alkenestuffs2.png'},
+                   {'lecture': "NMR can be used to identify chemicals. We're going to memorize the positions of NMR peaks. ",
+                   'image_location': 'pics/nmrstuffs2.png'},
+                   {'lecture': "Here are some more arbitrary things to memorize.",
+                   'image_location': 'pics/couplingconstants.png'},
+                   {'lecture': "Here are some PKAs to memorize.", 'image_location': 'pics/pkas.png'}]
 
 ##FINALS!!
 COOL_FINAL = Final("Cool Physics", 
