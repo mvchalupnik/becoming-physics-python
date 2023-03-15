@@ -462,13 +462,13 @@ class Game(tk.Frame):
         
         # Generate a lab scenario 
         lab_scenario = self.joined_research_lab.generate_lab_scenario()
-        if lab_scenario.scenario is None: # Ran out of scenarios!
-            self.event_frame = tk.Frame(self)
-            self.event_frame.grid(column=1)
-            tk.Message(self.event_frame,
+        if lab_scenario is None: # Ran out of scenarios!
+            self.lab_frame = tk.Frame(self)
+            self.lab_frame.grid(column=1)
+            tk.Message(self.lab_frame,
                       text = "You go to lab, but there is no work for you there. "\
                              "Maybe you should go to class instead?").grid()
-            tk.Button(self.event_frame, text="Ok", command=self.show_main_choices).grid()
+            tk.Button(self.lab_frame, text="Ok", command=self.recall_show_main_choices).grid()
         else:
             # Display Lab scenario 
             self.event_frame = tk.Frame(self)

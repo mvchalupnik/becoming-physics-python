@@ -90,7 +90,7 @@ class LabScenario:
     """
     
     def __init__ (self, scenario: str, choice1: Choice, choice2: Choice, lab_category: Enum,
-                  has_been_displayed: bool, sibling: int):
+                  has_been_displayed: bool=False, sibling: int=-1):
 
         self.has_been_displayed = has_been_displayed
         self.sibling = sibling
@@ -202,15 +202,15 @@ class Lab:
     # TODO I don't like that this is located here??
     ###set up siblings
     lab_scenarios[0].sibling = 1
-    LAB_SCENARIOS[1].sibling = 0
-    LAB_SCENARIOS[3].sibling = 4
-    LAB_SCENARIOS[4].sibling = 3 ## a better way to do this is to just check if titles match... TODO
-    LAB_SCENARIOS[5].sibling = 6
-    LAB_SCENARIOS[6].sibling = 5
-    LAB_SCENARIOS[7].sibling = 8
-    LAB_SCENARIOS[8].sibling = 7
-    LAB_SCENARIOS[9].sibling = 10
-    LAB_SCENARIOS[10].sibling = 9
+    lab_scenarios[1].sibling = 0
+    lab_scenarios[3].sibling = 4
+    lab_scenarios[4].sibling = 3 ## a better way to do this is to just check if titles match... TODO
+    lab_scenarios[5].sibling = 6
+    lab_scenarios[6].sibling = 5
+    lab_scenarios[7].sibling = 8
+    lab_scenarios[8].sibling = 7
+    lab_scenarios[9].sibling = 10
+    lab_scenarios[10].sibling = 9 #TODO move but leave not in caps
     
     def __init__ (self, name: str, lab_category: Enum):
         self.name = name
@@ -222,31 +222,29 @@ class Lab:
 
         # Create list of indices of undisplayed LabScenarios
         undisplayed_lab_scenarios = []
-        for lab_scenario in lab_scenarios #NOT A CONSTANT TODO
+        for lab_scenario in lab_scenarios:
+            if (not lab_scenario.has_been_displayed) and \
+                (lab_scenario.lab_category == LabType.BOTH or\
+                lab_scenario.lab_category == self.lab_category):
+                # Append to list
+                undisplayed_lab_scenarios.append(lab_scenario)
 
-        # Randomly generate a LabScenario associated with the LabType
-        trys = 100
-        for x in range (0, trys): # TODO improve this??
-            # Gives me my random index
-            rindex = int(random.random()*len(lab_scenarios))
-
-            # Check to make sure that LabScenario hasn't already been displayed
-            if (not lab_scenarios[rindex].has_been_displayed) and \
-                (lab_scenarios[rindex].lab_category == LabType.BOTH or\
-                lab_scenarios[rindex].lab_category == self.lab_category):
-
-                # Change has_been_displayed field to True
-                lab_scenarios[rindex].has_been_displayed = True
-                
-                # Check for a sibling, and if a sibling exists, change has_been_displayed to True
-                # for the sibling also
-                sindex = lab_scenarios[rindex].sibling
-                if sindex >=0:
-                    lab_scenarios[sindex].has_been_displayed = True
-                return lab_scenarios[rindex]
-        else:
-            # Ran out of lab_scenarios
+        if len(undisplayed_lab_scenarios) == 0:
             return None
+
+        # Randomly generate lab scenario
+        random_index = int(random.random()*len(undisplayed_lab_scenarios))
+
+        # Change has_been_displayed field to True
+        undisplayed_lab_scenarios[random_index].has_been_displayed = True
+
+        # Check for a sibling, and if a sibling exists, change has_been_displayed to True
+        # for the sibling also
+        sibling_index = undisplayed_lab_scenarios[random_index].sibling
+        if sibling_index >=0:
+            lab_scenarios[sibling_index].has_been_displayed = True
+
+        return undisplayed_lab_scenarios[random_index]
 
 
 class Ending:
