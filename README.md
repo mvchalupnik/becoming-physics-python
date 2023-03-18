@@ -6,4 +6,6 @@ BECOME
 
 PHYSICS????
 
-To run, run python main.py. 
+To run, run python main.py.
+
+Alternatively, to play the javascript version, click [here](https://mvchalupnik.github.io/main.html). 
